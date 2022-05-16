@@ -1,8 +1,9 @@
+const bcrypt = require("bcryptjs/dist/bcrypt");
 const db = require("../models");
 const User = db.smaily;
 const Op = db.Sequelize.Op;
 // Create and Save a new Tutorial
-exports.create = (req, res) => {
+exports.register = async (req, res) => {
     // Validate request
     if (!req.body.username) {
         res.status(400).send({
@@ -11,23 +12,42 @@ exports.create = (req, res) => {
         return;
     }
     // Create a Tutorial
-    const user = {
-        username: req.body.username,
-        password: req.body.password,
-        email: req.body.email
-    };
+    const { username, password, email } = req.body;
     // Save Tutorial in the database
-    User.create(user)
-        .then(data => {
-            res.send(data);
+    bcrypt.hash(password, 10).then(async (hash) => {
+        await User.create({
+            username,
+            password: hash,
+            email
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while registering user."
+            .then(data => {
+                res.send(data);
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message:
+                        err.message || "Some error occurred while registering user."
+                });
             });
-        });
+    })
 };
+
+exports.login = async (req, res) => {
+    const { username, password, email } = req.body;
+    if (!username || !email) {
+        return res.status(400).send({
+            message: "Please enter your username or email"
+        })
+    } else if (!password) {
+        return res.status(400).send({
+            message: "Please enter your password"
+        })
+    } else {
+        return res.status(400).send({
+            message: "Please enter your login credential correctly"
+        })
+    }
+}
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
     const username = req.query.username;
@@ -65,25 +85,43 @@ exports.findOne = (req, res) => {
 // Update a Tutorial by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
-    User.update(req.body, {
-        where: { id: id }
-    })
-        .then(num => {
-            if (num == 1) {
-                res.send({
-                    message: "User was updated successfully."
+    const role = req.body.role;
+    if (role && id) {
+        if (role === "Admin") {
+            User.update(req.body, {
+                where: { id: id }
+            })
+                .then(num => {
+                    if (num.role !== "Admin") {
+                        num.role = role;
+                        if (num == 1) {
+                            res.status(201).send({
+                                message: "User was updated successfully."
+                            });
+                        }
+                    }
+                    else {
+                        res.status(400).send({
+                            message: `Cannot update user with id=${id}. Maybe user was not found or req.body is empty!`
+                        });
+                    }
+                })
+                .catch(err => {
+                    res.status(500).send({
+                        message: "Error updating user with id=" + id
+                    });
                 });
-            } else {
-                res.send({
-                    message: `Cannot update user with id=${id}. Maybe user was not found or req.body is empty!`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error updating user with id=" + id
+        } else {
+            req.status(400).send({
+                message: "Role is not admin. Update is not permitted."
             });
-        });
+        }
+    }
+    else {
+        res.status(400).send({
+            message: "Unathorized action."
+        })
+    }
 };
 // Delete a Tutorial with the specified id in the request
 exports.delete = (req, res) => {
