@@ -2,8 +2,9 @@ module.exports = app => {
     const user = require("../controllers/smaily.controller.js");
     var router = require("express").Router();
     // Create a new Tutorial
-    router.post("/", user.create);
+    router.post("/register", user.register);
     // Retrieve all Tutorials
+    router.post("/login", user.login);
     router.get("/", user.findAll);
     // Retrieve all published Tutorials
     //router.get("/published", user.findAllPublished);

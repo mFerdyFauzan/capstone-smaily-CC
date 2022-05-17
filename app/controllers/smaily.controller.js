@@ -1,7 +1,9 @@
 const bcrypt = require("bcryptjs/dist/bcrypt");
+const jwt = require("jsonwebtoken");
 const db = require("../models");
 const User = db.smaily;
 const Op = db.Sequelize.Op;
+const jwtSecret = 'cd7144f9d2ed622fcc1712d47c1626424a076bb915fc0f038b84a1c2fa4aaebdb51ed2'
 // Create and Save a new Tutorial
 exports.register = async (req, res) => {
     // Validate request
@@ -20,8 +22,21 @@ exports.register = async (req, res) => {
             password: hash,
             email
         })
-            .then(data => {
-                res.send(data);
+            .then((user) => {
+                const maxAge = 3 * 60 * 60;
+                const token = jwt.sign({
+                    id: user._id, username, email, role: user.role
+                }, jwtSecret, {
+                    expiresIn: maxAge
+                });
+                res.cookie("jwt", token, {
+                    httpOnly: true,
+                    maxAge: maxAge * 1000
+                });
+                res.status(201).send({
+                    message: "Register successful",
+                    user: user._id
+                });
             })
             .catch(err => {
                 res.status(500).send({
@@ -33,18 +48,54 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    const { username, password, email } = req.body;
-    if (!username || !email) {
+    const { username, password } = req.body;
+    if (!username) {
         return res.status(400).send({
-            message: "Please enter your username or email"
+            message: "Please enter your username"
         })
     } else if (!password) {
         return res.status(400).send({
             message: "Please enter your password"
         })
-    } else {
+    } /*else if ((!username || !email) && !password) {
         return res.status(400).send({
             message: "Please enter your login credential correctly"
+        })
+    }
+    */
+    try {
+        const user = await User.findOne({ where: { username: username } })
+        if (user === null) {
+            res.status(400).send({
+                message: "Login failed cok",
+                error: "User not found"
+            })
+        } else {
+            bcrypt.compare(password, user.password).then(function (result) {
+                if (result) {
+                    const maxAge = 3 * 60 * 60;
+                    const token = jwt.sign({
+                        id: user._id, username, role: user.role
+                    }, jwtSecret, {
+                        expiresIn: maxAge
+                    });
+                    res.cookie("jwt", token, {
+                        httpOnly: true,
+                        maxAge: maxAge * 1000
+                    });
+                    res.status(201).send({
+                        message: "Login successful",
+                        user: user._id
+                    });
+                } else {
+                    res.status(400).send({ message: "Login Failed " });
+                }
+            })
+        }
+    } catch (error) {
+        res.status(500).send({
+            message: "An error occured during login process",
+            error: error.message
         })
     }
 }
@@ -86,40 +137,37 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
     const id = req.params.id;
     const role = req.body.role;
-    if (role && id) {
-        if (role === "Admin") {
+    if (id) {
+        if (role !== "Admin") {
             User.update(req.body, {
                 where: { id: id }
             })
-                .then(num => {
-                    if (num.role !== "Admin") {
-                        num.role = role;
-                        if (num == 1) {
-                            res.status(201).send({
-                                message: "User was updated successfully."
-                            });
-                        }
-                    }
-                    else {
+                .then(user => {
+                    if (user == 1) {
+                        res.status(201).send({
+                            message: "Update Successful."
+                        });
+                    } else {
                         res.status(400).send({
-                            message: `Cannot update user with id=${id}. Maybe user was not found or req.body is empty!`
+                            message: `Cannot update user with id=${id}. Maybe the req.body is empty!`
                         });
                     }
                 })
                 .catch(err => {
                     res.status(500).send({
-                        message: "Error updating user with id=" + id
+                        message: "Error updating user with id=" + id,
+                        err: err.message
                     });
                 });
         } else {
-            req.status(400).send({
-                message: "Role is not admin. Update is not permitted."
+            res.status(403).send({
+                message: "Unauthorized action."
             });
         }
     }
     else {
         res.status(400).send({
-            message: "Unathorized action."
+            message: "User ID was not found."
         })
     }
 };

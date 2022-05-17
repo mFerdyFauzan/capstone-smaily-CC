@@ -18,6 +18,12 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to Smaily." });
 });
+app.get("/register", (req, res) => {
+    res.json({ message: "Please fill the necessary column in order to register your account" });
+})
+app.get("/login", (req, res) => {
+    res.json({ message: "Please login to your account by entering your account's username or email and password" });
+})
 require("./app/routes/smaily.routes")(app);
 // set port, listen for requests
 const PORT = process.env.PORT || 5000;
