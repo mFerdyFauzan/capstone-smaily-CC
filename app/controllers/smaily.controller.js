@@ -3,9 +3,10 @@ const jwt = require("jsonwebtoken");
 const db = require("../models");
 const User = db.smaily;
 const Op = db.Sequelize.Op;
+const { nanoid } = require("nanoid");
 const jwtSecret = 'cd7144f9d2ed622fcc1712d47c1626424a076bb915fc0f038b84a1c2fa4aaebdb51ed2'
 // Create and Save a new Tutorial
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
     // Validate request
     if (!req.body.username) {
         res.status(400).send({
@@ -15,9 +16,11 @@ exports.register = async (req, res) => {
     }
     // Create a Tutorial
     const { username, password, email } = req.body;
+    const id = nanoid(10);
     // Save Tutorial in the database
     bcrypt.hash(password, 10).then(async (hash) => {
         await User.create({
+            id,
             username,
             password: hash,
             email
@@ -37,6 +40,7 @@ exports.register = async (req, res) => {
                     message: "Register successful",
                     user: user._id
                 });
+                next();
             })
             .catch(err => {
                 res.status(500).send({
@@ -47,7 +51,7 @@ exports.register = async (req, res) => {
     })
 };
 
-exports.login = async (req, res) => {
+exports.logIn = async (req, res, next) => {
     const { username, password } = req.body;
     if (!username) {
         return res.status(400).send({
@@ -87,6 +91,7 @@ exports.login = async (req, res) => {
                         message: "Login successful",
                         user: user._id
                     });
+                    next();
                 } else {
                     res.status(400).send({ message: "Login Failed " });
                 }
@@ -136,9 +141,9 @@ exports.findOne = (req, res) => {
 // Update a Tutorial by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
-    const role = req.body.role;
+    const { password, role } = req.body;
     if (id) {
-        if (role !== "Admin") {
+        if (!password && role !== "Admin") {
             User.update(req.body, {
                 where: { id: id }
             })
@@ -159,10 +164,32 @@ exports.update = (req, res) => {
                         err: err.message
                     });
                 });
-        } else {
-            res.status(403).send({
-                message: "Unauthorized action."
-            });
+        } else if (password && role !== "Admin") {
+            bcrypt.hash(password, 10).then(async (hash) => {
+                User.update({
+                    password: hash,
+                    role: role
+                }, {
+                    where: { id: id }
+                })
+                    .then(user => {
+                        if (user == 1) {
+                            res.status(201).send({
+                                message: "Update Successful."
+                            });
+                        } else {
+                            res.status(400).send({
+                                message: `Cannot update user with id=${id}. Maybe the req.body is empty!`
+                            });
+                        }
+                    })
+                    .catch(err => {
+                        res.status(500).send({
+                            message: "Error updating user with id=" + id,
+                            err: err.message
+                        });
+                    });
+            })
         }
     }
     else {
@@ -172,7 +199,7 @@ exports.update = (req, res) => {
     }
 };
 // Delete a Tutorial with the specified id in the request
-exports.delete = (req, res) => {
+exports.deleteOne = (req, res) => {
     const id = req.params.id;
     User.destroy({
         where: { id: id }
@@ -210,6 +237,36 @@ exports.deleteAll = (req, res) => {
             });
         });
 };
+
+exports.profile = (req, res) => {
+    const username = req.body.username;
+    User.findOne({ where: { username: username } })
+        .then(data => {
+            if (data) {
+                res.send(data);
+            } else {
+                res.status(404).send({
+                    message: `Cannot find user with id=${id}.`
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error retrieving user with id=" + id
+            });
+        });
+    /*if (user === null) {
+res.status(400).send({
+message: "Login failed cok",
+error: "User not found"
+})
+} */
+}
+
+exports.logOut = (req, res) => {
+    res.cookie("jwt", "", { maxAge: "1" });
+    res.redirect("/");
+}
 // Find all published Tutorials
 /*
 exports.findAllPublished = (req, res) => {

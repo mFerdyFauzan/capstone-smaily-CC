@@ -1,4 +1,23 @@
-module.exports = app => {
+const express = require("express");
+const router = express.Router();
+const {
+    register, logIn, findOne,
+    findAll, update, deleteOne,
+    deleteAll, logOut, profile
+} = require("../controllers/smaily.controller")
+const { adminAuth, userAuth } = require("../auth/smaily.auth");
+
+router.route("/basic/find/").get(userAuth, findAll);
+router.route("/basic/find/:id").get(userAuth, findOne);
+router.route("/register").post(register, logOut);
+router.route("/login").post(logIn, profile);
+router.route("/basic/update/:id").put(userAuth, update);
+router.route("/admin/deleteUser/:id").delete(adminAuth, deleteOne);
+router.route("/admin/destroy").delete(adminAuth, deleteAll);
+router.route("/logout").get(logOut);
+module.exports = router;
+
+/*module.exports = route => {
     const user = require("../controllers/smaily.controller.js");
     var router = require("express").Router();
     // Create a new Tutorial
@@ -16,5 +35,6 @@ module.exports = app => {
     router.delete("/:id", user.delete);
     // Create a new Tutorial
     router.delete("/", user.deleteAll);
-    app.use('/api/user', router);
+    route.use('/api/user', router);
 };
+*/
