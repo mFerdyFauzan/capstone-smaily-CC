@@ -9,7 +9,7 @@ exports.adminAuth = (req, res, next) => {
             if (err) {
                 return res.status(403).send({ message: "Not Authorized" });
             } else {
-                if (decodedToken.role !== "Admin") {
+                if (decodedToken.role !== "admin") {
                     return res.status(403).send({ message: "Not Authorized" });
                 } else {
                     next();
@@ -26,9 +26,9 @@ exports.userAuth = (req, res, next) => {
     if (token) {
         jwt.verify(token, jwtSecret, (err, decodedToken) => {
             if (err) {
-                return res.status(403).send({ message: "Not Authorized" });
+                return res.status(403).send({ err: err.message });
             } else {
-                if (decodedToken.role !== ("Basic" || "Admin")) {
+                if (decodedToken.role !== ("basic" || "admin" || "parent" || "children")) {
                     return res.status(403).send({ message: "Not Authorized" });
                 } else {
                     next();

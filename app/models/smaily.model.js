@@ -33,9 +33,11 @@ module.exports = (sequelize, Sequelize) => {
             }
         },
         role: {
-            type: Sequelize.STRING,
+            type: Sequelize.ENUM({
+                values: ['admin', 'parent', 'children', 'basic']
+            }),
             allowNull: false,
-            defaultValue: "Basic",
+            defaultValue: 'basic'
         }
     });
     return User;

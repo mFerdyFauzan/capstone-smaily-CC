@@ -36,11 +36,10 @@ exports.register = async (req, res, next) => {
                     httpOnly: true,
                     maxAge: maxAge * 1000
                 });
-                res.status(201).send({
+                res.status(201).redirect("/logout").send({
                     message: "Register successful",
                     user: user._id
                 });
-                next();
             })
             .catch(err => {
                 res.status(500).send({
@@ -91,7 +90,7 @@ exports.logIn = async (req, res, next) => {
                         message: "Login successful",
                         user: user._id
                     });
-                    next();
+                    //res.redirect("/profile");
                 } else {
                     res.status(400).send({ message: "Login Failed " });
                 }
@@ -143,7 +142,7 @@ exports.update = (req, res) => {
     const id = req.params.id;
     const { password, role } = req.body;
     if (id) {
-        if (!password && role !== "Admin") {
+        if (!password && role !== "admin") {
             User.update(req.body, {
                 where: { id: id }
             })
@@ -164,7 +163,7 @@ exports.update = (req, res) => {
                         err: err.message
                     });
                 });
-        } else if (password && role !== "Admin") {
+        } else if (password && role !== "admin") {
             bcrypt.hash(password, 10).then(async (hash) => {
                 User.update({
                     password: hash,

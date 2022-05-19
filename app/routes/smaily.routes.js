@@ -9,12 +9,13 @@ const { adminAuth, userAuth } = require("../auth/smaily.auth");
 
 router.route("/basic/find/").get(userAuth, findAll);
 router.route("/basic/find/:id").get(userAuth, findOne);
-router.route("/register").post(register, logOut);
-router.route("/login").post(logIn, profile);
+router.route("/register").post(register);
+router.route("/login").post(logIn);
 router.route("/basic/update/:id").put(userAuth, update);
 router.route("/admin/deleteUser/:id").delete(adminAuth, deleteOne);
 router.route("/admin/destroy").delete(adminAuth, deleteAll);
 router.route("/logout").get(logOut);
+//router.route("/profile").get(profile);
 module.exports = router;
 
 /*module.exports = route => {

@@ -7,7 +7,7 @@ var corsOptions = {
     origin: "http://localhost:8081"
 };
 const db = require("./app/models");
-db.sequelize.sync({ force: true }).then(() => {
+db.sequelize.sync({ alter: true }).then(() => {
     console.log("Alter and re-sync db.");
 });
 app.use(cors(corsOptions));
@@ -27,6 +27,7 @@ app.get("/register", (req, res) => {
 app.get("/login", (req, res) => {
     res.send({ message: "Please login to your account by entering your account's username or email and password" });
 })
+/*
 app.get("/update", (req, res) => {
     res.send({ message: "Update your user information" });
 })
@@ -36,6 +37,7 @@ app.get("/delete", (req, res) => {
 app.get("/destroy", (req, res) => {
     res.send({ message: "Delete all users from database" });
 })
+*/
 app.get("/admin", adminAuth, (req, res) => {
     res.send("Admin Route");
 })
@@ -43,8 +45,12 @@ app.get("/basic", userAuth, (req, res) => {
     res.send("User Route");
 })
 app.get("/logout", (req, res) => {
-    res.send({ message: "Logged Out" });
+    res.send({ message: "Please log in to access the app" });
 })
+/*
+app.get("/profile", (req, res) => {
+    res.send({ message:});
+})*/
 app.use("/api/user", require("./app/routes/smaily.routes"));
 // set port, listen for requests
 const PORT = process.env.PORT || 5000;
