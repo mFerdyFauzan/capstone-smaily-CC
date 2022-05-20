@@ -1,14 +1,16 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const { initial } = require("./app/controllers/smaily.controller");
 const app = express();
 const { adminAuth, userAuth } = require("./app/auth/smaily.auth");
+const db = require("./app/models");
 var corsOptions = {
     origin: "http://localhost:8081"
 };
-const db = require("./app/models");
-db.sequelize.sync({ alter: true }).then(() => {
+db.sequelize.sync({ force: true }).then(() => {
     console.log("Alter and re-sync db.");
+    initial();
 });
 app.use(cors(corsOptions));
 // parse requests of content-type - application/json
@@ -51,7 +53,7 @@ app.get("/logout", (req, res) => {
 app.get("/profile", (req, res) => {
     res.send({ message:});
 })*/
-app.use("/api/user", require("./app/routes/smaily.routes"));
+app.use("/", require("./app/routes/smaily.routes"));
 // set port, listen for requests
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

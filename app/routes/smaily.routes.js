@@ -7,15 +7,15 @@ const {
 } = require("../controllers/smaily.controller")
 const { adminAuth, userAuth } = require("../auth/smaily.auth");
 
-router.route("/basic/find/").get(userAuth, findAll);
-router.route("/basic/find/:id").get(userAuth, findOne);
-router.route("/register").post(register);
-router.route("/login").post(logIn);
-router.route("/basic/update/:id").put(userAuth, update);
+router.route("/user/find/").get(userAuth, findAll);
+router.route("/user/find/:id").get(userAuth, findOne);
+router.route("/auth/register").post(register);
+router.route("/auth/login").post(logIn);
+router.route("/user/update/:id").put(userAuth, update);
 router.route("/admin/deleteUser/:id").delete(adminAuth, deleteOne);
-router.route("/admin/destroy").delete(adminAuth, deleteAll);
-router.route("/logout").get(logOut);
-//router.route("/profile").get(profile);
+router.route("/admin/drop").delete(adminAuth, deleteAll);
+router.route("/user/logout").get(logOut);
+router.route("/user").get(profile);
 module.exports = router;
 
 /*module.exports = route => {

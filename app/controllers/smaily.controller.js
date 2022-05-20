@@ -5,6 +5,29 @@ const User = db.smaily;
 const Op = db.Sequelize.Op;
 const { nanoid } = require("nanoid");
 const jwtSecret = 'cd7144f9d2ed622fcc1712d47c1626424a076bb915fc0f038b84a1c2fa4aaebdb51ed2'
+
+exports.initial = async (req, res) => {
+    db.smaily.create({
+        id: nanoid(10),
+        username: "Admin",
+        password: '$2a$10$8AsfA1NtP.tKWHSxzqVppOGjPQpuDFEGysCF/0j.0wEcdp9Hl1xDm',
+        email: 'admin@smaily.com',
+        role: 'admin',
+        createdAt: new Date(),
+        updatedAt: new Date()
+    })
+        .then((user) => {
+            const maxAge = 3 * 60 * 60;
+            const token = jwt.sign({
+                id: user._id, role: user.role
+            }, jwtSecret, {
+                expiresIn: maxAge
+            });
+            res.cookie("jwt", token, {
+                maxAge: maxAge * 1000
+            });
+        })
+}
 // Create and Save a new Tutorial
 exports.register = async (req, res, next) => {
     // Validate request
@@ -36,7 +59,7 @@ exports.register = async (req, res, next) => {
                     httpOnly: true,
                     maxAge: maxAge * 1000
                 });
-                res.status(201).redirect("/logout").send({
+                res.status(201).send({
                     message: "Register successful",
                     user: user._id
                 });
@@ -105,11 +128,15 @@ exports.logIn = async (req, res, next) => {
 }
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
-    const username = req.query.username;
+    const { page, size, username } = req.query;
+    const { limit, offset } = getPagination(page, size);
     var condition = username ? { username: { [Op.iLike]: `%${username}%` } } : null;
-    User.findAll({ where: condition })
+    User.findAndCountAll({
+        where: condition, limit, offset
+    })
         .then(data => {
-            res.send(data);
+            const response = getPagingData(data, page, limit);
+            res.send(response);
         })
         .catch(err => {
             res.status(500).send({
@@ -245,13 +272,13 @@ exports.profile = (req, res) => {
                 res.send(data);
             } else {
                 res.status(404).send({
-                    message: `Cannot find user with id=${id}.`
+                    message: `Cannot find user with username=${username}.`
                 });
             }
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving user with id=" + id
+                message: "Error retrieving user with id=" + username
             });
         });
     /*if (user === null) {
@@ -266,19 +293,35 @@ exports.logOut = (req, res) => {
     res.cookie("jwt", "", { maxAge: "1" });
     res.redirect("/");
 }
-// Find all published Tutorials
-/*
-exports.findAllPublished = (req, res) => {
-    Smaily.findAll({ where: { published: true } })
-    .then(data => {
-      res.send(data);
+// Find all users by username
+
+exports.findByRole = (req, res) => {
+    const { page, size, role } = req.query;
+    const { limit, offset } = getPagination(page, size);
+    User.findAndCountAll({
+        where: { role: { [Op.like]: `%${role}%` }, limit, offset }
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving tutorials."
-      });
-    });
+        .then(data => {
+            const response = getPagingData(data, page, limit);
+            res.send(response);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message:
+                    err.message || "Some error occurred while retrieving tutorials."
+            });
+        });
 };
 
-*/
+const getPagingData = (data, page, limit) => {
+    const { count: totalItems, rows: users } = data;
+    const currentPage = page ? +page : 0;
+    const totalPages = Math.ceil(totalItems / limit);
+    return { totalItems, users, totalPages, currentPage };
+};
+
+const getPagination = (page, size) => {
+    const limit = size ? +size : 4;
+    const offset = page ? page * limit : 0;
+    return { limit, offset };
+};
