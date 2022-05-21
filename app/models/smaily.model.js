@@ -16,13 +16,10 @@ module.exports = (sequelize, Sequelize) => {
         },
         password: {
             type: Sequelize.STRING,
-            allowNull: false
-            /*
+            allowNull: false,
             validate: {
-                is: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$/,
-                isAlphanumeric: true
+                not: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$/
             }
-            */
         },
         email: {
             type: Sequelize.STRING,

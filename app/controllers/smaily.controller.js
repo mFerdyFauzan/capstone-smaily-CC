@@ -132,6 +132,7 @@ exports.findAll = (req, res) => {
     const { limit, offset } = getPagination(page, size);
     var condition = username ? { username: { [Op.iLike]: `%${username}%` } } : null;
     User.findAndCountAll({
+        order: [['username', 'ASC']],
         where: condition, limit, offset
     })
         .then(data => {
