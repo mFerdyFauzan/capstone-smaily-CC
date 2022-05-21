@@ -34,9 +34,9 @@
 - [x] Model Validation
 
 ###### **YANG BELOM:**
-- [] Profile
-- [] Autentikasi token (mobile)
-- [] Authorization berdasarkan role
-- [] Menyambungkan akun orangtua ke akun anak
-- [] Dokumentasi API
+- [ ] Profile
+- [ ] Autentikasi token (mobile)
+- [ ] Authorization berdasarkan role
+- [ ] Menyambungkan akun orangtua ke akun anak
+- [ ] Dokumentasi API
 - dll
