@@ -1,5 +1,7 @@
 # Capstone-Smaily
 
+Repository team Smaily sebagai tempat untuk menampung code backend untuk Capstone Project di Bangkit Academy 2022
+
 ## CARA PAKAI:
 1. Bikin database dulu di PostgreSQL yang namanya "testdb"
    - Install postgreSQL
