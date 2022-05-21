@@ -1,25 +1,42 @@
-# capstone-smaily
+# Capstone-Smaily
 
-# CARA PAKAI:
---> Bikin database dulu di PostgreSQL yang namanya "testdb", install package yang dubutuhkan pakai NPM, baru jalanin node server.js
+## CARA PAKAI:
+1. Bikin database dulu di PostgreSQL yang namanya "testdb"
+   - Install postgreSQL
+   - Buka pSQL (PostgreSQL Shell)
+   - Masukkan perintah berikut: ```CREATE DATABASE testdb```
+2. install package yang dubutuhkan pakai NPM
+   - Install NodeJS
+   - Buka folder tempat Anda menaruh code ini
+   - Buka terminal / cmd Windows di lokasi folder
+   - Masukkan perintah ```npm init --y```
+   - Install package yang dibutuhkan dengan perintah berikut: ```npm install package-name1 package-name2 package-nameN```
+4. Jalankan node server.js
+   - Ganti listening port terlebih dahulu (bila listening port di code sedang dipakai)
+   - Masukkan perintah ```node server.js``` di terminal yang telah dibuka tadi
+5. Tes API pakai Postman
+   - Masukkan alamat yang ada di smaily.route.js pada kolom address yang dituju
+   - Tentukan HTTP Method sesuai dengan API yang ingin dites
+   - Masukkan variabel / parameter sesuai dengan API yang ingin dites
+   - Klik tombol Send Request
 
-# YANG SUDAH:
-- Login
-- Register
-- CRUD
-- Logout
-- Search
-- JWT
-- Hash Password
-- Pagination
-- Ordering
-- Insert Admin user
-- Model Validation
+###### **YANG SUDAH:**
+- [x] Login
+- [x] Register
+- [x] CRUD
+- [x] Logout
+- [x] Search
+- [x] JWT
+- [x] Hash Password
+- [x] Pagination
+- [x] Ordering
+- [x] Insert Admin user
+- [x] Model Validation
 
-# YANG BELOM:
-- Profile
-- Autentikasi token (mobile)
-- Authorization berdasarkan role
-- Menyambungkan akun orangtua ke akun anak
-- Dokumentasi API
+###### **YANG BELOM:**
+- [] Profile
+- [] Autentikasi token (mobile)
+- [] Authorization berdasarkan role
+- [] Menyambungkan akun orangtua ke akun anak
+- [] Dokumentasi API
 - dll
