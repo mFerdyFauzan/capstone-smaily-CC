@@ -11,11 +11,15 @@
 - Search
 - JWT
 - Hash Password
+- Pagination
+- Ordering
+- Insert Admin user
+- Model Validation
 
 # YANG BELOM:
 - Profile
 - Autentikasi token (mobile)
+- Authorization berdasarkan role
 - Menyambungkan akun orangtua ke akun anak
-- Mempromosikan role menjadi Admin
 - Dokumentasi API
 - dll
