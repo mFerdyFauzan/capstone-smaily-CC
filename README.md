@@ -40,5 +40,7 @@ Repository team Smaily sebagai tempat untuk menampung code backend untuk Capston
 - [ ] Autentikasi token (mobile)
 - [ ] Authorization berdasarkan role
 - [ ] Menyambungkan akun orangtua ke akun anak
+- [ ] Riwayat jelajah anak
+- [ ] Komentar ortu berdasarkan riwayat
 - [ ] Dokumentasi API
 - dll
