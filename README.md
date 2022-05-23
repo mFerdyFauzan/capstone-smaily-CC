@@ -43,4 +43,4 @@ Repository team Smaily sebagai tempat untuk menampung code backend untuk Capston
 - [ ] Riwayat jelajah anak
 - [ ] Komentar ortu berdasarkan riwayat
 - [ ] Dokumentasi API
-- dll
+- [ ] dll
