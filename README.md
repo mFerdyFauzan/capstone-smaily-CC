@@ -33,7 +33,7 @@ Repository team Smaily sebagai tempat untuk menampung code backend untuk Capston
 - [x] Pagination
 - [x] Ordering
 - [x] Insert Admin user
-- [x] Model Validation
+- [x] Input Validation
 
 ###### **YANG BELOM:**
 - [ ] Profile
