@@ -1,3 +1,5 @@
+const { sequelize, Sequelize } = require(".");
+
 module.exports = (sequelize, Sequelize) => {
     const User = sequelize.define("user", {
         id: {
@@ -28,13 +30,6 @@ module.exports = (sequelize, Sequelize) => {
             validate: {
                 isEmail: true
             }
-        },
-        role: {
-            type: Sequelize.ENUM({
-                values: ['admin', 'parent', 'children', 'basic']
-            }),
-            allowNull: false,
-            defaultValue: 'basic'
         }
     });
     return User;

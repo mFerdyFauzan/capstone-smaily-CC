@@ -1,131 +1,133 @@
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../models");
-const User = db.smaily;
+const User = db.user;
+const Role = db.role;
+const Comment = db.comment;
+const History = db.history;
 const Op = db.Sequelize.Op;
 const { nanoid } = require("nanoid");
 const jwtSecret = 'cd7144f9d2ed622fcc1712d47c1626424a076bb915fc0f038b84a1c2fa4aaebdb51ed2'
 
-exports.initial = async (req, res) => {
-    db.smaily.create({
+exports.initialize = async (req, res) => {
+    Role.create({
+        id: 1,
+        name: "children"
+    });
+
+    Role.create({
+        id: 2,
+        name: "parent"
+    });
+
+    Role.create({
+        id: 3,
+        name: "admin"
+    });
+    User.create({
         id: nanoid(10),
         username: "Admin",
-        password: '$2a$10$8AsfA1NtP.tKWHSxzqVppOGjPQpuDFEGysCF/0j.0wEcdp9Hl1xDm',
+        password: bcrypt.hashSync('4dm1n5m4i1y', 10),
         email: 'admin@smaily.com',
-        role: 'admin',
         createdAt: new Date(),
         updatedAt: new Date()
     })
-        .then((user) => {
-            const maxAge = 3 * 60 * 60;
-            const token = jwt.sign({
-                id: user._id, role: user.role
-            }, jwtSecret, {
-                expiresIn: maxAge
-            });
-            res.cookie("jwt", token, {
-                maxAge: maxAge * 1000
-            });
+        .then(user => {
+            // user role = 3
+            user.setRoles([3]);
         })
-}
-// Create and Save a new Tutorial
-exports.register = async (req, res, next) => {
-    // Validate request
-    if (!req.body.username) {
-        res.status(400).send({
-            message: "Please fill all the necessary field"
+        .catch(err => {
+            res.status(500).send({ message: err.message });
         });
-        return;
-    }
-    // Create a Tutorial
-    const { username, password, email } = req.body;
-    const id = nanoid(10);
-    // Save Tutorial in the database
-    bcrypt.hash(password, 10).then(async (hash) => {
-        await User.create({
-            id,
-            username,
-            password: hash,
-            email
-        })
-            .then((user) => {
-                const maxAge = 3 * 60 * 60;
-                const token = jwt.sign({
-                    id: user._id, username, email, role: user.role
-                }, jwtSecret, {
-                    expiresIn: maxAge
-                });
-                res.cookie("jwt", token, {
-                    httpOnly: true,
-                    maxAge: maxAge * 1000
-                });
-                res.status(201).send({
-                    message: "Register successful",
-                    user: user._id
-                });
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message:
-                        err.message || "Some error occurred while registering user."
-                });
-            });
+}
+
+// Create and Save a new Tutorial
+exports.registerChildren = (req, res) => {
+    // Save User to Database
+    User.create({
+        id: nanoid(10),
+        username: req.body.username,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 10)
     })
+        .then(user => {
+            if (req.body.username && req.body.email && req.body.password) {
+                // user role = 1
+                user.setRoles([1]).then(() => {
+                    res.send({ message: "User was registered successfully!" });
+                });
+            }
+            else {
+                res.send({ message: "Please fill in the required fields " });
+            }
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message });
+        });
 };
 
-exports.logIn = async (req, res, next) => {
-    const { username, password } = req.body;
-    if (!username) {
-        return res.status(400).send({
-            message: "Please enter your username"
+exports.registerParent = (req, res) => {
+    // Save User to Database
+    User.create({
+        id: nanoid(10),
+        username: req.body.username,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 10),
+    })
+        .then(user => {
+            if (req.body.username && req.body.email && req.body.password) {
+                user.setRoles([2]).then(() => {
+                    res.send({ message: "User was registered successfully!" });
+                });
+            }
         })
-    } else if (!password) {
-        return res.status(400).send({
-            message: "Please enter your password"
-        })
-    } /*else if ((!username || !email) && !password) {
-        return res.status(400).send({
-            message: "Please enter your login credential correctly"
-        })
-    }
-    */
-    try {
-        const user = await User.findOne({ where: { username: username } })
-        if (user === null) {
-            res.status(400).send({
-                message: "Login failed cok",
-                error: "User not found"
-            })
-        } else {
-            bcrypt.compare(password, user.password).then(function (result) {
-                if (result) {
-                    const maxAge = 3 * 60 * 60;
-                    const token = jwt.sign({
-                        id: user._id, username, role: user.role
-                    }, jwtSecret, {
-                        expiresIn: maxAge
-                    });
-                    res.cookie("jwt", token, {
-                        httpOnly: true,
-                        maxAge: maxAge * 1000
-                    });
-                    res.status(201).send({
-                        message: "Login successful",
-                        user: user._id
-                    });
-                    //res.redirect("/profile");
-                } else {
-                    res.status(400).send({ message: "Login Failed " });
-                }
-            })
-        }
-    } catch (error) {
-        res.status(500).send({
-            message: "An error occured during login process",
-            error: error.message
-        })
-    }
+        .catch(err => {
+            res.status(500).send({ message: err.message });
+        });
 }
+
+exports.logIn = async (req, res, next) => {
+    User.findOne({
+        where: {
+            username: req.body.username
+        }
+    })
+        .then(user => {
+            if (!user) {
+                return res.status(404).send({ message: "User Not found." });
+            }
+            var passwordIsValid = bcrypt.compareSync(
+                req.body.password,
+                user.password
+            );
+            if (!passwordIsValid) {
+                return res.status(401).send({
+                    accessToken: null,
+                    message: "Invalid Password!"
+                });
+            }
+            var token = jwt.sign({ id: user.id }, jwtSecret, {
+                expiresIn: 86400 // 24 hours
+            });
+            var authorities = [];
+            user.getRoles().then(roles => {
+                for (let i = 0; i < roles.length; i++) {
+                    authorities.push("ROLE_" + roles[i].name.toUpperCase());
+                }
+                res.status(200).send({
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    roles: authorities,
+                    accessToken: token
+                });
+            });
+        })
+        .catch(err => {
+            res.status(500).send({ message: err.message });
+        });
+}
+
 // Retrieve all Tutorials from the database.
 exports.findAll = (req, res) => {
     const { page, size, username } = req.query;
@@ -165,13 +167,15 @@ exports.findOne = (req, res) => {
             });
         });
 };
-// Update a Tutorial by the id in the request
-exports.update = (req, res) => {
+
+exports.changePassword = (req, res) => {
     const id = req.params.id;
-    const { password, role } = req.body;
+    const password = req.body.password;
     if (id) {
-        if (!password && role !== "admin") {
-            User.update(req.body, {
+        bcrypt.hash(password, 10).then(async (hash) => {
+            User.update({
+                password: hash
+            }, {
                 where: { id: id }
             })
                 .then(user => {
@@ -191,35 +195,50 @@ exports.update = (req, res) => {
                         err: err.message
                     });
                 });
-        } else if (password && role !== "admin") {
-            bcrypt.hash(password, 10).then(async (hash) => {
-                User.update({
-                    password: hash,
-                    role: role
-                }, {
-                    where: { id: id }
-                })
-                    .then(user => {
-                        if (user == 1) {
-                            res.status(201).send({
-                                message: "Update Successful."
-                            });
-                        } else {
-                            res.status(400).send({
-                                message: `Cannot update user with id=${id}. Maybe the req.body is empty!`
-                            });
-                        }
-                    })
-                    .catch(err => {
-                        res.status(500).send({
-                            message: "Error updating user with id=" + id,
-                            err: err.message
-                        });
-                    });
-            })
-        }
+        })
+    } else {
+        res.status(400).send({
+            message: "User ID was not found."
+        })
     }
-    else {
+}
+
+// Update a Tutorial by the id in the request
+exports.update = (req, res) => {
+    const id = req.params.id;
+    const { email, password, role } = req.body;
+    if (id) {
+        bcrypt.hash(password, 10).then(async (hash) => {
+            User.update({
+                email: email,
+                password: hash,
+                role: role
+            }, {
+                where: { id: id }
+            })
+                .then(user => {
+                    if (user == 1) {
+                        res.status(201).send({
+                            message: "Update Successful.",
+                            id: user.id,
+                            username: user.username,
+                            email: user.email,
+                            role: user.role
+                        });
+                    } else {
+                        res.status(400).send({
+                            message: `Cannot update user with id=${id}. Maybe the req.body is empty!`
+                        });
+                    }
+                })
+                .catch(err => {
+                    res.status(500).send({
+                        message: "Error updating user with id=" + id,
+                        err: err.message
+                    });
+                });
+        })
+    } else {
         res.status(400).send({
             message: "User ID was not found."
         })
@@ -231,8 +250,8 @@ exports.deleteOne = (req, res) => {
     User.destroy({
         where: { id: id }
     })
-        .then(num => {
-            if (num == 1) {
+        .then(user => {
+            if (user == 1) {
                 res.send({
                     message: "user was deleted successfully!"
                 });
@@ -248,14 +267,15 @@ exports.deleteOne = (req, res) => {
             });
         });
 };
+
 // Delete all Tutorials from the database.
 exports.deleteAll = (req, res) => {
     User.destroy({
         where: {},
         truncate: false
     })
-        .then(nums => {
-            res.send({ message: `${nums} Users were deleted successfully!` });
+        .then(user => {
+            res.send({ message: `${user} Users were deleted successfully!` });
         })
         .catch(err => {
             res.status(500).send({
@@ -270,7 +290,11 @@ exports.profile = (req, res) => {
     User.findOne({ where: { username: username } })
         .then(data => {
             if (data) {
-                res.send(data);
+                res.send({
+                    id: data.id,
+                    username: data.username,
+                    email: data.email,
+                });
             } else {
                 res.status(404).send({
                     message: `Cannot find user with username=${username}.`
@@ -282,20 +306,14 @@ exports.profile = (req, res) => {
                 message: "Error retrieving user with id=" + username
             });
         });
-    /*if (user === null) {
-res.status(400).send({
-message: "Login failed cok",
-error: "User not found"
-})
-} */
 }
 
 exports.logOut = (req, res) => {
-    res.cookie("jwt", "", { maxAge: "1" });
+    //res.cookie("jwt", "", { maxAge: "1" });
     res.redirect("/");
 }
 // Find all users by username
-
+/*
 exports.findByRole = (req, res) => {
     const { page, size, role } = req.query;
     const { limit, offset } = getPagination(page, size);
@@ -313,7 +331,7 @@ exports.findByRole = (req, res) => {
             });
         });
 };
-
+*/
 const getPagingData = (data, page, limit) => {
     const { count: totalItems, rows: users } = data;
     const currentPage = page ? +page : 0;

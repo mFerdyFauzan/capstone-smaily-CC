@@ -14,5 +14,25 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-db.smaily = require("./smaily.model.js")(sequelize, Sequelize);
+db.user = require("./smaily.user.model")(sequelize, Sequelize);
+db.role = require("./smaily.role.model")(sequelize, Sequelize);
+db.comment = require("./smaily.comment.model")(sequelize, Sequelize);
+db.history = require("./smaily.history.model")(sequelize, Sequelize);
+db.role.belongsToMany(db.user, {
+    through: "user_roles",
+    foreignKey: "roleId",
+    otherKey: "userId"
+});
+db.user.belongsToMany(db.role, {
+    through: "user_roles",
+    foreignKey: "userId",
+    otherKey: "roleId"
+});
+db.user.hasMany(db.history);
+db.user.hasMany(db.comment);
+db.comment.belongsTo(db.user);
+db.comment.belongsTo(db.history);
+db.history.hasMany(db.comment);
+db.history.belongsTo(db.user);
+db.ROLES = ["admin", "parent", "children"];
 module.exports = db;
