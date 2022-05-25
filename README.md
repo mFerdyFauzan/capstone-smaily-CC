@@ -34,11 +34,13 @@ Repository team Smaily sebagai tempat untuk menampung code backend untuk Capston
 - [x] Ordering
 - [x] Insert Admin user
 - [x] Input Validation
+- [x] Profile
+- [x] Role-based Authorization
 
 ###### **YANG BELOM:**
-- [ ] Profile
+- [ ] Update role user
 - [ ] Autentikasi token (mobile)
-- [ ] Authorization berdasarkan role
+- [ ] log out yang bener (bukan expire jwt)
 - [ ] Menyambungkan akun orangtua ke akun anak
 - [ ] Riwayat jelajah anak
 - [ ] Komentar ortu berdasarkan riwayat
