@@ -1,9 +1,16 @@
 const db = require("../models");
 const User = db.user;
 const jwt = require("jsonwebtoken");
-const jwtSecret = 'cd7144f9d2ed622fcc1712d47c1626424a076bb915fc0f038b84a1c2fa4aaebdb51ed2'
+const config = require("./auth.config");
+const { TokenExpiredError } = jwt;
 
-verifyToken = (req, res, next) => {
+const catchError = (err, res) => {
+    if (err instanceof TokenExpiredError) {
+        return res.status(401).send({ message: "Unauthorized! Access Token was expired!" });
+    }
+    return res.sendStatus(401).send({ message: "Unauthorized!" });
+}
+const verifyToken = (req, res, next) => {
     //let token = req.cookies.jwt;
     let token = req.headers["x-access-token"];
     if (!token) {
@@ -11,11 +18,9 @@ verifyToken = (req, res, next) => {
             message: "No token provided!"
         });
     }
-    jwt.verify(token, jwtSecret, (err, decoded) => {
+    jwt.verify(token, config.secret, (err, decoded) => {
         if (err) {
-            return res.status(401).send({
-                message: "Unauthorized!"
-            });
+            return catchError(err, res);
         }
         req.userId = decoded.id;
         next();

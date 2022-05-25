@@ -1,12 +1,6 @@
 const express = require("express");
-const router = express.Router();
 const controller = require("../controllers/smaily.controller");
 const app = express();
-/*{
-    register, logIn, findOne,
-    findAll, update, deleteOne,
-    deleteAll, logOut, profile
-} */
 const { verifySignUp } = require("../auth")
 
 module.exports = function (app) {
@@ -34,4 +28,9 @@ module.exports = function (app) {
         controller.registerParent
     );
     app.post("/api/auth/login", controller.logIn);
+    app.post("/api/auth/refreshtoken", controller.refreshToken);
+    app.post(
+        "/api/user/logout",
+        controller.logOut
+    );
 };

@@ -1,13 +1,10 @@
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../models");
-const User = db.user;
-const Role = db.role;
-const Comment = db.comment;
-const History = db.history;
+const { user: User, role: Role, refreshToken: RefreshToken, comment: Comment, history: History } = db;
 const Op = db.Sequelize.Op;
+const config = require("../auth/auth.config");
 const { nanoid } = require("nanoid");
-const jwtSecret = 'cd7144f9d2ed622fcc1712d47c1626424a076bb915fc0f038b84a1c2fa4aaebdb51ed2'
 
 exports.initialize = async (req, res) => {
     Role.create({
@@ -92,11 +89,11 @@ exports.logIn = async (req, res, next) => {
             username: req.body.username
         }
     })
-        .then(user => {
+        .then(async (user) => {
             if (!user) {
                 return res.status(404).send({ message: "User Not found." });
             }
-            var passwordIsValid = bcrypt.compareSync(
+            const passwordIsValid = bcrypt.compareSync(
                 req.body.password,
                 user.password
             );
@@ -106,10 +103,11 @@ exports.logIn = async (req, res, next) => {
                     message: "Invalid Password!"
                 });
             }
-            var token = jwt.sign({ id: user.id }, jwtSecret, {
-                expiresIn: 86400 // 24 hours
+            const token = jwt.sign({ id: user.id }, config.secret, {
+                expiresIn: config.jwtExpiration // 24 hours
             });
-            var authorities = [];
+            let refreshToken = await RefreshToken.createToken(user);
+            let authorities = [];
             user.getRoles().then(roles => {
                 for (let i = 0; i < roles.length; i++) {
                     authorities.push("ROLE_" + roles[i].name.toUpperCase());
@@ -119,7 +117,8 @@ exports.logIn = async (req, res, next) => {
                     username: user.username,
                     email: user.email,
                     roles: authorities,
-                    accessToken: token
+                    accessToken: token,
+                    refreshToken: refreshToken
                 });
             });
         })
@@ -167,12 +166,12 @@ exports.findOne = (req, res) => {
             });
         });
 };
-
+// Change user's password
 exports.changePassword = (req, res) => {
     const id = req.params.id;
-    const password = req.body.password;
+    const newPassword = req.body.password;
     if (id) {
-        bcrypt.hash(password, 10).then(async (hash) => {
+        bcrypt.hash(newPassword, 10).then(async (hash) => {
             User.update({
                 password: hash
             }, {
@@ -203,7 +202,7 @@ exports.changePassword = (req, res) => {
     }
 }
 
-// Update a Tutorial by the id in the request
+// Update a user by the id in the request
 exports.update = (req, res) => {
     const id = req.params.id;
     const { email, password, role } = req.body;
@@ -244,7 +243,7 @@ exports.update = (req, res) => {
         })
     }
 };
-// Delete a Tutorial with the specified id in the request
+// Delete a user with the specified id in the request
 exports.deleteOne = (req, res) => {
     const id = req.params.id;
     User.destroy({
@@ -268,7 +267,7 @@ exports.deleteOne = (req, res) => {
         });
 };
 
-// Delete all Tutorials from the database.
+// Delete all users from the database.
 exports.deleteAll = (req, res) => {
     User.destroy({
         where: {},
@@ -308,30 +307,63 @@ exports.profile = (req, res) => {
         });
 }
 
-exports.logOut = (req, res) => {
-    //res.cookie("jwt", "", { maxAge: "1" });
-    res.redirect("/");
-}
-// Find all users by username
-/*
-exports.findByRole = (req, res) => {
-    const { page, size, role } = req.query;
-    const { limit, offset } = getPagination(page, size);
-    User.findAndCountAll({
-        where: { role: { [Op.like]: `%${role}%` }, limit, offset }
-    })
-        .then(data => {
-            const response = getPagingData(data, page, limit);
-            res.send(response);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving tutorials."
+exports.logOut = async (req, res) => {
+    const { refreshToken: requestToken } = req.body;
+    if (requestToken == null) {
+        return res.status(403).json({ message: "Refresh Token is required!" });
+    }
+    try {
+        let refreshToken = await RefreshToken.findOne({ where: { token: requestToken } });
+        console.log(refreshToken)
+        if (!refreshToken) {
+            res.status(403).json({ message: "Refresh token is not in database! User hal aready been logged out!" });
+            return;
+        }
+        if (RefreshToken.verifyExpiration(refreshToken)) {
+            RefreshToken.destroy({ where: { id: refreshToken.id } });
+            res.status(200).json({
+                message: "You have been logged out",
             });
+            return;
+        }
+    } catch (err) {
+        return res.status(500).send({ message: err });
+    }
+}
+
+exports.refreshToken = async (req, res) => {
+    const { refreshToken: requestToken } = req.body;
+    if (requestToken == null) {
+        return res.status(403).json({ message: "Refresh Token is required!" });
+    }
+    try {
+        let refreshToken = await RefreshToken.findOne({ where: { token: requestToken } });
+        console.log(refreshToken)
+        if (!refreshToken) {
+            res.status(403).json({ message: "Refresh token is not in database!" });
+            return;
+        }
+        if (RefreshToken.verifyExpiration(refreshToken)) {
+            RefreshToken.destroy({ where: { id: refreshToken.id } });
+
+            res.status(403).json({
+                message: "Refresh token was expired. Please make a new signin request",
+            });
+            return;
+        }
+        const user = await refreshToken.getUser();
+        let newAccessToken = jwt.sign({ id: user.id }, config.secret, {
+            expiresIn: config.jwtExpiration,
         });
+        return res.status(200).json({
+            accessToken: newAccessToken,
+            refreshToken: refreshToken.token,
+        });
+    } catch (err) {
+        return res.status(500).send({ message: err });
+    }
 };
-*/
+
 const getPagingData = (data, page, limit) => {
     const { count: totalItems, rows: users } = data;
     const currentPage = page ? +page : 0;
