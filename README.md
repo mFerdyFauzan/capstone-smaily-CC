@@ -38,11 +38,10 @@ Repository team Smaily sebagai tempat untuk menampung code backend untuk Capston
 - [x] Role-based Authorization
 
 ###### **YANG BELOM:**
-- [ ] Update role user
 - [ ] Autentikasi token (mobile)
 - [ ] log out yang bener (bukan expire jwt)
-- [ ] Menyambungkan akun orangtua ke akun anak
-- [ ] Riwayat jelajah anak
-- [ ] Komentar ortu berdasarkan riwayat
+- [ ] Menyambungkan akun orangtua ke akun anak (kurang token)
+- [ ] Riwayat jelajah anak (kalo perlu)
+- [ ] Komentar ortu berdasarkan riwayat (kalo perlu)
 - [ ] Dokumentasi API
 - [ ] dll
