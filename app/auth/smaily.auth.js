@@ -1,5 +1,5 @@
 const db = require("../models");
-const User = db.user;
+const Parent = db.parent;
 const jwt = require("jsonwebtoken");
 const config = require("./auth.config");
 const { TokenExpiredError } = jwt;
@@ -22,58 +22,50 @@ const verifyToken = (req, res, next) => {
         if (err) {
             return catchError(err, res);
         }
-        req.userId = decoded.id;
+        parentId = decoded.id;
+        console.log(parentId);
         next();
     });
 };
 isAdmin = (req, res, next) => {
-    User.findByPk(req.userId).then(user => {
-        user.getRoles().then(roles => {
-            for (let i = 0; i < roles.length; i++) {
-                if (roles[i].name === "admin") {
-                    next();
-                    return;
-                }
-            }
+    Parent.findByPk(parentId).then(user => {
+        if (user.role === 'admin') {
+            next();
+            return;
+        } else {
             res.status(403).send({
                 message: "Unauthorized. Action Require Admin Role!"
             });
             return;
-        });
+        }
     });
 };
+
 isParent = (req, res, next) => {
-    User.findByPk(req.userId).then(user => {
-        user.getRoles().then(roles => {
-            for (let i = 0; i < roles.length; i++) {
-                if (roles[i].name === "parent") {
-                    next();
-                    return;
-                }
-            }
+    Parent.findByPk(parentId).then(user => {
+        if (user.role === 'parent') {
+            next();
+            return;
+        } else {
             res.status(403).send({
                 message: "Unauthorized. Action Require Parent Role!"
             });
-        });
+            return;
+        }
     });
 };
+
 isParentOrAdmin = (req, res, next) => {
-    User.findByPk(req.userId).then(user => {
-        user.getRoles().then(roles => {
-            for (let i = 0; i < roles.length; i++) {
-                if (roles[i].name === "parent") {
-                    next();
-                    return;
-                }
-                if (roles[i].name === "admin") {
-                    next();
-                    return;
-                }
-            }
+    Parent.findByPk(parentId).then(user => {
+        if (user.role === 'parent' || user.role === 'admin') {
+            next();
+            return;
+        } else {
             res.status(403).send({
                 message: "Unauthorized. Action Require Parent or Admin Role!"
             });
-        });
+            return;
+        }
     });
 };
 const authJwt = {

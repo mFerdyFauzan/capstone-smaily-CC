@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "580fe582-77e0-4828-b2a6-cc305c678632",
+		"_postman_id": "840466f8-7ebc-4eeb-9dc0-e9e7b2fa1ce1",
 		"name": "Smaily",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "16000505"
@@ -207,6 +207,115 @@
 						"user",
 						"find",
 						"WcIm2OI_cx"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create History",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"tesChildren2\",\r\n    \"url\": \"http://www.tes.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/user/history/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"user",
+						"history",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find All History By User ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"tesChildren2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/user/history",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"user",
+						"history"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Comment",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InNTa2k5WjYtXzkiLCJpYXQiOjE2NTM1NDM1NjUsImV4cCI6MTY1MzU0Mzg2NX0.vjEdqCb-iT7bLRFSYCZKlzUe0hzk6wZ6b2Xmezc23Wk",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"tesParent\",\r\n    \"text\": \"tes comment\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/user/history/comment/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"user",
+						"history",
+						"comment",
+						"create"
 					]
 				}
 			},

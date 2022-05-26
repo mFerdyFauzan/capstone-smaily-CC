@@ -11,18 +11,32 @@ module.exports = function (app) {
         );
         next();
     });
+    /*
+    app.post(
+        "/api/user/history/create",
+        controller.createHistory
+    );
     app.get(
-        "/api/user/find",
-        [authJwt.verifyToken, authJwt.isParentOrAdmin],
+        "/api/user/history",
+        controller.findHistoryById
+    );
+    app.post(
+        "/api/user/history/comment/create",
+        [authJwt.verifyToken, authJwt.isParent],
+        controller.createComment
+    );  
+    app.get(
+        "/api/admin/find",
+        [authJwt.verifyToken, authJwt.isAdmin],
         controller.findAll
     );
     app.get(
-        "/api/user/find/:id",
-        [authJwt.verifyToken, isParentOrAdmin],
+        "/api/admin/find/:id",
+        [authJwt.verifyToken, authJwt.isAdmin],
         controller.findOne
-    );
+    ); */
     app.put(
-        "/api/user/changePassword/:id",
+        "/api/user/:id/changePassword",
         [authJwt.verifyToken, authJwt.isParent],
         controller.changePassword
     );
@@ -46,8 +60,8 @@ module.exports = function (app) {
         controller.deleteAll
     );
     app.get(
-        "/api/user/profile",
-        [authJwt.verifyToken],
+        "/api/user/:id/profile",
+        [authJwt.verifyToken, authJwt.isParentOrAdmin],
         controller.profile
     );
 };

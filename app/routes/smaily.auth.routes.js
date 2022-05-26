@@ -1,7 +1,7 @@
 const express = require("express");
 const controller = require("../controllers/smaily.controller");
 const app = express();
-const { verifySignUp } = require("../auth")
+const { verifySignUp, authJwt } = require("../auth")
 
 module.exports = function (app) {
     app.use(function (req, res, next) {
@@ -12,18 +12,17 @@ module.exports = function (app) {
         next();
     });
     app.post(
-        "/api/auth/register/children",
+        "/api/auth/register/:id/children",
         [
-            verifySignUp.checkDuplicateUsernameOrEmail,
-            verifySignUp.checkRolesExisted
+            authJwt.verifyToken, authJwt.isParent
         ],
         controller.registerChildren
     );
     app.post(
-        "/api/auth/register/parent",
+        "/api/auth/register",
         [
-            verifySignUp.checkDuplicateUsernameOrEmail,
-            verifySignUp.checkRolesExisted
+            verifySignUp.checkDuplicateUsernameOrEmail
+            //verifySignUp.checkRolesExisted
         ],
         controller.registerParent
     );

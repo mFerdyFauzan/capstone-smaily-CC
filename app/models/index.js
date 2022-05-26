@@ -14,11 +14,25 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-db.user = require("./smaily.user.model")(sequelize, Sequelize);
+db.parent = require("./smaily.parent.model")(sequelize, Sequelize);
+db.children = require("./smaily.children.model")(sequelize, Sequelize);
+db.refreshToken = require("./smaily.refreshToken.model")(sequelize, Sequelize);
+db.parent.hasMany(db.children, { as: "childrens" });
+db.children.belongsTo(db.parent, {
+    foreignKey: "parentId",
+    as: "parent",
+});
+db.refreshToken.belongsTo(db.parent, {
+    foreignKey: 'parentId', targetKey: 'id'
+});
+db.parent.hasOne(db.refreshToken, {
+    foreignKey: 'parentId', targetKey: 'id'
+});
+/*
 db.role = require("./smaily.role.model")(sequelize, Sequelize);
 db.comment = require("./smaily.comment.model")(sequelize, Sequelize);
 db.history = require("./smaily.history.model")(sequelize, Sequelize);
-db.refreshToken = require("./smaily.refreshToken.model")(sequelize, Sequelize);
+/*
 db.role.belongsToMany(db.user, {
     through: "user_roles",
     foreignKey: "roleId",
@@ -29,17 +43,23 @@ db.user.belongsToMany(db.role, {
     foreignKey: "userId",
     otherKey: "roleId"
 });
-db.refreshToken.belongsTo(db.user, {
-    foreignKey: 'userId', targetKey: 'id'
+db.user.hasMany(db.history, { as: "histories" });
+db.user.hasMany(db.comment, { as: "comments" });
+db.comment.belongsTo(db.user, {
+    foreignKey: "userId",
+    as: "user"
 });
-db.user.hasOne(db.refreshToken, {
-    foreignKey: 'userId', targetKey: 'id'
+db.comment.belongsTo(db.history, {
+    foreignKey: "historyId",
+    as: "history"
 });
-db.user.hasMany(db.history);
-db.user.hasMany(db.comment);
-db.comment.belongsTo(db.user);
-db.comment.belongsTo(db.history);
-db.history.hasMany(db.comment);
-db.history.belongsTo(db.user);
+db.history.hasMany(db.comment, { as: "comment" });
+db.history.belongsTo(db.user, {
+    foreignKey: {
+        type: Sequelize.UUID,
+        allowNull: false
+    }
+});
 db.ROLES = ["admin", "parent", "children"];
+*/
 module.exports = db;

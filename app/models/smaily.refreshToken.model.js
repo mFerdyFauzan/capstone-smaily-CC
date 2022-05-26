@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
         let _token = uuidv4();
         let refreshToken = await this.create({
             token: _token,
-            userId: user.id,
+            parentId: user.id,
             expiryDate: expiredAt.getTime(),
         });
         return refreshToken.token;

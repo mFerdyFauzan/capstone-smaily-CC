@@ -1,19 +1,24 @@
 const { sequelize, Sequelize } = require(".");
 
 module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("user", {
+    const Children = sequelize.define("children", {
         id: {
             type: Sequelize.STRING,
             primaryKey: true,
             allowNull: false,
             unique: true
-        },
-        username: {
+        } /*,
+        token: {
             type: Sequelize.STRING,
             allowNull: false,
-            unique: true,
+            unique: true
+        } */
+        /*
+        name: {
+            type: Sequelize.STRING,
+            allowNull: false,
             validate: {
-                isAlphanumeric: true
+                isAlpha: true
             }
         },
         password: {
@@ -31,6 +36,7 @@ module.exports = (sequelize, Sequelize) => {
                 isEmail: true
             }
         }
+        */
     });
-    return User;
+    return Children;
 };
