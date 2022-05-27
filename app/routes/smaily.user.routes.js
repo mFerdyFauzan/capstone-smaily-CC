@@ -24,7 +24,7 @@ module.exports = function (app) {
         "/api/user/history/comment/create",
         [authJwt.verifyToken, authJwt.isParent],
         controller.createComment
-    );  
+    ); */
     app.get(
         "/api/admin/find",
         [authJwt.verifyToken, authJwt.isAdmin],
@@ -34,7 +34,17 @@ module.exports = function (app) {
         "/api/admin/find/:id",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.findOne
-    ); */
+    );
+    app.get(
+        "/api/children/:id",
+        [authJwt.verifyToken],
+        controller.childrenMainPage
+    )
+    app.get(
+        "/api/user/:id/profile",
+        [authJwt.verifyToken, authJwt.isParentOrAdmin],
+        controller.profile
+    );
     app.put(
         "/api/user/:id/changePassword",
         [authJwt.verifyToken, authJwt.isParent],
@@ -44,11 +54,7 @@ module.exports = function (app) {
         "/api/admin/update/:id",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.update
-    ); /*
-    app.post(
-        "/api/user/logout",
-        controller.logOut
-    ); */
+    );
     app.delete(
         "/api/admin/deleteUser/:id",
         [authJwt.verifyToken, authJwt.isAdmin],
@@ -58,10 +64,5 @@ module.exports = function (app) {
         "/api/admin/drop",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.deleteAll
-    );
-    app.get(
-        "/api/user/:id/profile",
-        [authJwt.verifyToken, authJwt.isParentOrAdmin],
-        controller.profile
     );
 };

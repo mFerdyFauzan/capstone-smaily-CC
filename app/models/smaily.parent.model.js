@@ -38,12 +38,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.ENUM('admin', 'parent'),
             defaultValue: 'parent',
             allowNull: false
-        } /*,
-        token: {
-            type: Sequelize.STRING,
-            allowNull: false,
-            unique: true
-        } */
+        }
     });
     return Parent;
 };

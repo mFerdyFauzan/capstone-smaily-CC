@@ -1,7 +1,7 @@
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../models");
-const { parent: Parent, children: Children, refreshToken: RefreshToken } = db;
+const { parent: Parent, children: Children, refreshToken: RefreshToken, connectToken: ConnectToken } = db;
 const Op = db.Sequelize.Op;
 const config = require("../auth/auth.config");
 const { nanoid } = require("nanoid");
@@ -9,106 +9,100 @@ const req = require("express/lib/request");
 const res = require("express/lib/response");
 
 exports.initialize = () => {
-    /*
-    Role.create({
-        id: 1,
-        name: "children"
-    });
-
-    Role.create({
-        id: 2,
-        name: "parent"
-    });
-
-    Role.create({
-        id: 3,
-        name: "admin"
-    });
-    */
-    /*
-    const token1 = nanoid(5);
-    const token2 = nanoid(5);
-    const token3 = nanoid(5); */
+    // Admin user
     Parent.create({
         id: nanoid(10),
         name: "Admin",
         password: bcrypt.hashSync('$4dm1n5m4i1yP4reNt%', 10),
         email: 'admin@smaily.com',
         role: "admin",
-        //token: token1
     });
+    // parent 1
     Parent.create({
         id: nanoid(10),
         name: "Budi Santoso",
         password: bcrypt.hashSync('BudiMhanx49', 10),
         email: 'budis49@smaily.com',
-    }).then(user => {
+    }).then(parent => {
         Children.create({
             id: nanoid(10),
-            /*
-            username: "Admin",
-            password: bcrypt.hashSync('4dm1n5m4i1yChi1DreN', 10),
-            email: 'admin@smaily.com',
-            role: "admin",
-            */
-            parentId: user.id
-        }).then(child => {
-            console.log(`Parent ${user.id} is connected to Child ${child.id}`);
+            parentId: parent.id
         })
-    }).catch(err => {
-        console.log(err);
-    });
+            .then(async (user) => {
+                let connectToken = await ConnectToken.createToken(user);
+                console.log(`Parent ${parent.id} has registered and connected to their Child ${user.id}`);
+            })
+            .catch(err => { console.log(err); });
+    })
+        .catch(err => { console.log(err); });
+    // parent 2
     Parent.create({
         id: nanoid(10),
         name: "Entis Sutisna",
         password: bcrypt.hashSync('.SeulK4n9!', 10),
         email: 'suleeee@smaily.com',
-    }).then(user => {
+    }).then(parent => {
         Children.create({
             id: nanoid(10),
-            /*
-            username: "Admin",
-            password: bcrypt.hashSync('4dm1n5m4i1yChi1DreN', 10),
-            email: 'admin@smaily.com',
-            role: "admin",
-            */
-            parentId: user.id
-        }).then(child => {
-            console.log(`Parent ${user.id} is connected to Child ${child.id}`);
+            parentId: parent.id
         })
-    }).catch(err => {
-        console.log(err);
-    });
-    /*
-        .then(user => {
-            // user role = 3
-            user.setRoles([3]);
+            .then(async (user) => {
+                let connectToken = await ConnectToken.createToken(user);
+                console.log(`Parent ${parent.id} has registered and connected to their Child ${user.id}`);
+            })
+            .catch(err => { console.log(err); });
+    })
+        .catch(err => { console.log(err); });
+}
+
+// To register / add children by parent
+exports.registerChildren = (req, res) => {
+    const id = req.params.id;
+    Parent.findOne({
+        where: { id: id }
+    }).then(parent => {
+        Children.create({
+            id: nanoid(10),
+            parentId: parent.id
         })
+            .then(async (user) => {
+                console.log(`${user.parentId}`);
+                let connectToken = await ConnectToken.createToken(user);
+                res.status(201).send({
+                    connectToken: connectToken
+                });
+            })
+            .catch(err => {
+                res.status(500).send({ message: err.message });
+            });
+    })
         .catch(err => {
             res.status(500).send({ message: err.message });
         });
-        */
 }
 
-// Create and Save a new Tutorial
-exports.registerChildren = (req, res) => {
-    Parent.findOne({ where: { id: req.params.id } })
-        .then(parent => {
-            Children.create({
-                id: nanoid(10),
-                parentId: parent.id
-                /*
-                username: req.body.username,
-                email: req.body.email,
-                password: bcrypt.hashSync(req.body.password, 10) */
-            }).then(children => {
-                if (children) {
-                    res.send({ message: `Children ${children.id} is registered and connected to parent ${parent.id}` });
-                }
-                else {
-                    res.send({ message: "Register failed" });
-                }
+// for Children to login to the app
+exports.logInChildren = async (req, res) => {
+    const connectToken = req.params.token;
+    ConnectToken.findOne({ where: { token: connectToken } })
+        .then(data => {
+            Children.findOne({
+                where: { id: data.childrenId }
             })
+                .then(child => {
+                    const token = jwt.sign({ id: child.id }, config.secret, {
+                        expiresIn: config.jwtExpiration // 24 hours
+                    });
+                    if (child) {
+                        res.send({
+                            message: `Children ${child.id} is registered and connected to parent ${child.parentId} through connect token ${connectToken}`,
+                            accessToken: token
+                        });
+                    }
+                    else {
+                        res.send({ message: "Register failed" });
+                    }
+                })
                 .catch(err => {
                     res.status(500).send({ message: err.message });
                 });
@@ -116,26 +110,10 @@ exports.registerChildren = (req, res) => {
         .catch(err => {
             res.status(500).send({ message: err.message });
         });
-    /*
-        .then(user => {
-            if (req.body.username && req.body.email && req.body.password) {
-                // user role = 1
-                user.setRoles([1]).then(() => {
-                    res.send({ message: "User was registered successfully!" });
-                });
-            }
-            else {
-                res.send({ message: "Please fill in the required fields " });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
-        */
 };
 
+// Register account for parents
 exports.registerParent = (req, res) => {
-    // Save User to Database
     const { name, email, password } = req.body;
     if (name && email && password) {
         Parent.create({
@@ -145,14 +123,12 @@ exports.registerParent = (req, res) => {
             password: bcrypt.hashSync(password, 10),
         }).then(user => {
             if (user) {
-                //user.setRoles([2]).then(() => {
                 res.status(201).send({
                     message: "Parent was registered successfully!",
                     id: user.id,
                     name: user.name,
                     email: user.email
                 });
-                //});
             } else {
                 res.send({ message: "Register failed." });
             }
@@ -165,6 +141,7 @@ exports.registerParent = (req, res) => {
     }
 }
 
+// For parents to log in to the app
 exports.logIn = async (req, res, next) => {
     Parent.findOne({
         where: {
@@ -212,50 +189,57 @@ exports.logIn = async (req, res, next) => {
         });
 }
 
-// Retrieve all Tutorials from the database.
-/*
+// When children open the app, they will be showed with these informations
+exports.childrenMainPage = (req, res) => {
+    const id = req.params.id;
+    Children.findOne({
+        where: { id: id }
+    }).then(child => {
+        if (child) {
+            res.status(200).send({
+                id: id,
+                message: `Perangkat ini terhubung dengan perangkat orang tua dengan ID: ${child.parentId}. TERIMA KASIH`,
+            })
+        }
+    })
+}
+
+// Retrieve all parents from database.
 exports.findAll = (req, res) => {
     const { page, size, email } = req.query;
     const { limit, offset } = getPagination(page, size);
     var condition = email ? { email: { [Op.iLike]: `%${email}%` } } : null;
     Parent.findAndCountAll({
         order: [['email', 'ASC']],
-        where: condition, limit, offset
+        where: condition, limit, offset,
+        include: [{
+            model: Children,
+            as: 'childrens'
+        }]
+    }).then(data => {
+        const response = getPagingData(data, page, limit);
+        res.send(response);
     })
-        .then(user => {
-            const userList = [];
-            const { id } = user;
-            userList = id
-            Children.findAndCountAll({
-                order: [['id', 'ASC']],
-                where: id, limit, offset
-            }).then(data => {
-                const response = getPagingData(data, page, limit);
-                res.send(response);
-            })
-                .catch(err => {
-                    res.status(500).send({ message: err.message });
-                });
-        })
         .catch(err => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while retrieving email."
+                    err.message || "Some error occurred while retrieving data."
             });
         });
 };
-// Find a single Tutorial with an id
+// Find a single parent with an id
 exports.findOne = (req, res) => {
     const id = req.params.id;
-    Parent.findByPk(id)
+    Parent.findOne({
+        where: { id: id },
+        include: [{
+            model: Children,
+            as: 'childrens',
+            where: { parentId: id }
+        }]
+    })
         .then(data => {
-            if (data) {
-                res.send(data);
-            } else {
-                res.status(404).send({
-                    message: `Cannot find user with id=${id}.`
-                });
-            }
+            res.status(200).send(data);
         })
         .catch(err => {
             res.status(500).send({
@@ -263,12 +247,11 @@ exports.findOne = (req, res) => {
             });
         });
 };
-*/
+
 // Change user's password
 exports.changePassword = (req, res) => {
     const id = req.params.id;
-    const password = req.body.password
-    const newPassword = req.body.newpassword;
+    const { password, newPassword } = req.body;
     Parent.findOne({ where: { id: id } })
         .then(user => {
             if (id) {
@@ -311,7 +294,6 @@ exports.changePassword = (req, res) => {
                 })
             }
         })
-
 }
 
 // Update a user by the id in the request
@@ -357,27 +339,25 @@ exports.update = (req, res) => {
         })
     }
 };
+
 // Delete a user with the specified id in the request
 exports.deleteOne = (req, res) => {
     const id = req.params.id;
     Parent.destroy({
-        where: { id: id }
+        where: { id: id },
+        include: [{
+            model: Children,
+            as: 'childrens',
+            where: { parentId: id },
+        }]
     })
-        .then(user => {
-            if (user == 1) {
-                res.send({
-                    message: "user was deleted successfully!"
-                });
-            } else {
-                res.send({
-                    message: `Cannot delete user with id=${id}. Maybe user was not found!`
-                });
-            }
+        .then(parent => {
+            res.status(200).send({
+                message: `Parent User ${id} has been deleted along with the associated children account`
+            });
         })
         .catch(err => {
-            res.status(500).send({
-                message: "Could not delete user with id=" + id
-            });
+            res.status(500).send({ message: err.message });
         });
 };
 
@@ -387,8 +367,12 @@ exports.deleteAll = (req, res) => {
         where: {},
         truncate: false
     })
-        .then(user => {
-            res.send({ message: `${user} Users were deleted successfully!` });
+        .then(parent => {
+            Children.destroy({
+                where: {},
+                truncate: false
+            })
+            res.send({ message: `${parent} Parent and Child accounts were deleted successfully!` });
         })
         .catch(err => {
             res.status(500).send({
@@ -398,41 +382,28 @@ exports.deleteAll = (req, res) => {
         });
 };
 
+// These informations will be shown to the account
 exports.profile = (req, res) => {
     const id = req.params.id;
-    Parent.findOne({ where: { id: id } })
-        .then(parent => {
-            if (parent) {
-                Children.findOne({ where: { parentId: parent.id } })
-                    .then(children => {
-                        if (children) {
-                            res.status(200).send({
-                                id: parent.id,
-                                name: parent.name,
-                                email: parent.email,
-                                childrenId: children.id
-                            })
-                        }
-                        else {
-                            res.status(200).send({
-                                id: parent.id,
-                                name: parent.name,
-                                email: parent.email
-                            })
-                        }
-                    })
-                    .catch(err => {
-                        res.status(500).send({ message: err.message });
-                    });
-            } else {
-                res.status(404).send({ message: "Parent id not found" });
-            }
+    Parent.findOne({
+        where: { id: id },
+        attributes: ['id', 'name', 'email'],
+        include: [{
+            model: Children,
+            as: 'childrens',
+            where: { parentId: id },
+            attributes: ['id']
+        }]
+    })
+        .then(data => {
+            res.status(200).send(data)
         })
         .catch(err => {
             res.status(500).send({ message: err.message });
         });
 }
 
+// For parents to log out (masih belom bisa)
 exports.logOut = async (req, res) => {
     const { refreshToken: requestToken } = req.body;
     if (requestToken == null) {
@@ -457,6 +428,7 @@ exports.logOut = async (req, res) => {
     }
 }
 
+// To retrieve new access token to access the app
 exports.refreshToken = async (req, res) => {
     const { refreshToken: requestToken } = req.body;
     if (requestToken == null) {

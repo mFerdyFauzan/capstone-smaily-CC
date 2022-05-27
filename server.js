@@ -10,61 +10,11 @@ const db = require("./app/models");
 var corsOptions = {
     origin: "http://localhost:8081"
 };
-// Sync the database and initialize the roles and admin user
+// Sync the database and initialize admin the users
 db.sequelize.sync({ force: true }).then(() => {
     console.log("Alter and re-sync db.");
     controller.initialize();
-    //tes();
 });
-/*
-const tes = async () => {
-    const history1 = await controller.createHistory({
-        name: "History#1",
-        url: "http://www.contoh1.com"
-    });
-    const history2 = await controller.createHistory({
-        name: "History#2",
-        url: "http://www.contoh2.com"
-    });
-    const comment1 = await controller.createComment(history1.id, {
-        name: "bezkoder",
-        text: "Good job!",
-    });
-    await controller.createComment(history1.id, {
-        name: "zkoder",
-        text: "One of the best tuts!",
-    });
-    const comment2 = await controller.createComment(history2.id, {
-        name: "aKoder",
-        text: "Hi, thank you!"
-    });
-    await controller.createComment(history2.id, {
-        name: "anotherKoder",
-        text: "Awesome tut!",
-    });
-    const history1Data = await controller.findTutorialById(history1.id);
-    console.log(
-        ">> Tutorial id=" + history1Data.id,
-        JSON.stringify(history1Data, null, 2)
-    );
-    const history2Data = await controller.findTutorialById(history2.id);
-    console.log(
-        ">> Tutorial id=" + history2Data.id,
-        JSON.stringify(history2Data, null, 2)
-    );
-    const comment1Data = await controller.findCommentById(comment1.id);
-    console.log(
-        ">> Comment id=" + comment1.id,
-        JSON.stringify(comment1Data, null, 2)
-    );
-    const comment2Data = await controller.findCommentById(comment2.id);
-    console.log(
-        ">> Comment id=" + comment2.id,
-        JSON.stringify(comment2Data, null, 2)
-    );
-    const histories = await controller.findAll();
-    console.log(">> All tutorials", JSON.stringify(histories, null, 2));
-}; */
 //
 app.use(cors(corsOptions));
 // parse requests of content-type - application/json

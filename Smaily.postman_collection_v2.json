@@ -26,30 +26,6 @@
 			"response": []
 		},
 		{
-			"name": "Register Children",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:5000/api/auth/register/parent/jf2A-wpknH/children",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"auth",
-						"register",
-						"parent",
-						"jf2A-wpknH",
-						"children"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Register Parent",
 			"request": {
 				"method": "POST",
@@ -64,7 +40,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/auth/register/parent",
+					"raw": "http://localhost:5000/api/auth/register",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -73,8 +49,7 @@
 					"path": [
 						"api",
 						"auth",
-						"register",
-						"parent"
+						"register"
 					]
 				}
 			},
@@ -87,7 +62,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"parent@gmail.com\",\r\n    \"password\": \"PNZSO2BNnjasbx1._!\"\r\n}",
+					"raw": "{\r\n    \"email\": \"admin@smaily.com\",\r\n    \"password\": \"$4dm1n5m4i1yP4reNt%\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -236,6 +211,139 @@
 			"response": []
 		},
 		{
+			"name": "Register Children",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRwRFZzUEFxVWEiLCJpYXQiOjE2NTM2NjU1ODQsImV4cCI6MTY1MzY2NTg4NH0.r_IeK44IHYQd-8Qky-JZiYtXhIKh9WuSh2TPkd31r6Y",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/api/auth/tpDVsPAqUa/registerChildren",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"auth",
+						"tpDVsPAqUa",
+						"registerChildren"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login Children",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/auth/login/children/Njjgd",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"auth",
+						"login",
+						"children",
+						"Njjgd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Children Main Page",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IndaUy12NkpuME0iLCJpYXQiOjE2NTM2NjU2OTIsImV4cCI6MTY1MzY2NTk5Mn0.RsFtltd88f6JWx80NZnUpn1qReBngtyfN_DoszoU-x4",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/api/children/wZS-v6Jn0M",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"children",
+						"wZS-v6Jn0M"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find All Users (Admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkhhRG9Rc0dLS2EiLCJpYXQiOjE2NTM2NjQ5NjEsImV4cCI6MTY1MzY2NTI2MX0.zDZChJRajd2zlHgVO405KpFX921NUCAGVgYx9Txo9H0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/api/admin/find",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"find"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Find User By Id (Admin)",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkhhRG9Rc0dLS2EiLCJpYXQiOjE2NTM2NjQ5NjEsImV4cCI6MTY1MzY2NTI2MX0.zDZChJRajd2zlHgVO405KpFX921NUCAGVgYx9Txo9H0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/api/admin/find/bkyxVqYrwK",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"find",
+						"bkyxVqYrwK"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Update (Admin)",
 			"request": {
 				"method": "PUT",
@@ -279,12 +387,12 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InFFRVEyeDNaY1EiLCJpYXQiOjE2NTM0MDM5MTEsImV4cCI6MTY1MzQ5MDMxMX0.g_TuQL60jE6Q5Frnww6Jjt-XDZaMolCpukOLF_SgQSU",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZWTUdjTEVGZFQiLCJpYXQiOjE2NTM2Mzk1ODUsImV4cCI6MTY1MzYzOTg4NX0.9mxA5OGDayWfoPFJAivL-9M2HIL1bR2xMdRER273ANs",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/admin/deleteUser/WcIm2OI_cx",
+					"raw": "http://localhost:5000/api/admin/deleteUser/O4-D5m4MPi",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -294,7 +402,7 @@
 						"api",
 						"admin",
 						"deleteUser",
-						"WcIm2OI_cx"
+						"O4-D5m4MPi"
 					]
 				}
 			},

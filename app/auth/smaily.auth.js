@@ -1,14 +1,15 @@
 const db = require("../models");
 const Parent = db.parent;
+const ConnectToken = db.connectToken;
 const jwt = require("jsonwebtoken");
 const config = require("./auth.config");
 const { TokenExpiredError } = jwt;
 
 const catchError = (err, res) => {
     if (err instanceof TokenExpiredError) {
-        return res.status(401).send({ message: "Unauthorized! Access Token was expired!" });
+        return res.status(403).send({ message: "Unauthorized! Access Token was expired!" });
     }
-    return res.sendStatus(401).send({ message: "Unauthorized!" });
+    return res.sendStatus(403).send({ message: "Unauthorized!" });
 }
 const verifyToken = (req, res, next) => {
     //let token = req.cookies.jwt;
@@ -23,10 +24,32 @@ const verifyToken = (req, res, next) => {
             return catchError(err, res);
         }
         parentId = decoded.id;
-        console.log(parentId);
         next();
     });
 };
+
+async function verifyConnectToken(req, res, next) {
+    const connectToken = req.params.token;
+    if (connectToken == null) {
+        return res.status(403).json({ message: "Connect Token is required!" });
+    }
+    let cekToken = await ConnectToken.findOne({ where: { token: connectToken } });
+    if (!cekToken) {
+        res.status(404).json({ message: "Connect token is not in database!" });
+        return;
+    } else {
+        if (ConnectToken.verifyExpiration(cekToken)) {
+            ConnectToken.destroy({
+                where: { id: cekToken.id }
+            });
+            res.status(403).json({
+                message: "Connect token was expired. Please make a new register child request",
+            });
+            return;
+        }
+        next();
+    }
+}
 isAdmin = (req, res, next) => {
     Parent.findByPk(parentId).then(user => {
         if (user.role === 'admin') {
@@ -70,6 +93,7 @@ isParentOrAdmin = (req, res, next) => {
 };
 const authJwt = {
     verifyToken: verifyToken,
+    verifyConnectToken: verifyConnectToken,
     isAdmin: isAdmin,
     isParent: isParent,
     isParentOrAdmin: isParentOrAdmin
