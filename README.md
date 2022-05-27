@@ -43,5 +43,6 @@ Repository team Smaily sebagai tempat untuk menampung code backend untuk Capston
 - [ ] log out yang bener (bukan expire jwt)
 - [ ] Riwayat jelajah anak (kalo perlu) GA USAH PLEASE
 - [ ] Komentar ortu berdasarkan riwayat (kalo perlu) GA USAH PLEASE
+- [ ] API untuk GCP
 - [ ] Dokumentasi API
 - [ ] dll
