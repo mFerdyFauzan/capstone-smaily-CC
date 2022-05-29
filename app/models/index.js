@@ -18,10 +18,9 @@ db.parent = require("./smaily.parent.model")(sequelize, Sequelize);
 db.children = require("./smaily.children.model")(sequelize, Sequelize);
 db.refreshToken = require("./smaily.refreshToken.model")(sequelize, Sequelize);
 db.connectToken = require("./smaily.connectToken.model")(sequelize, Sequelize);
-db.parent.hasMany(db.children, { as: "childrens" });
+db.parent.hasOne(db.children);
 db.children.belongsTo(db.parent, {
     foreignKey: "parentId",
-    as: "parent",
 });
 db.refreshToken.belongsTo(db.parent, {
     foreignKey: 'parentId', targetKey: 'id'
@@ -32,7 +31,7 @@ db.parent.hasOne(db.refreshToken, {
 db.connectToken.belongsTo(db.parent, {
     foreignKey: 'parentId', targetKey: 'id'
 });
-db.parent.hasMany(db.connectToken, {
+db.parent.hasOne(db.connectToken, {
     foreignKey: 'parentId', targetKey: 'id'
 });
 db.connectToken.belongsTo(db.children, {

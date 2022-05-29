@@ -61,17 +61,28 @@ exports.registerChildren = (req, res) => {
     Parent.findOne({
         where: { id: id }
     }).then(parent => {
-        Children.create({
-            id: nanoid(10),
-            parentId: parent.id
+        Children.findOne({
+            where: { parentId: parent.id }
+        }).then(data => {
+            if (!data) {
+                Children.create({
+                    id: nanoid(10),
+                    parentId: id
+                })
+                    .then(async (user) => {
+                        console.log(`${user.parentId}`);
+                        let connectToken = await ConnectToken.createToken(user);
+                        res.status(201).send({
+                            connectToken: connectToken
+                        });
+                    })
+                    .catch(err => {
+                        res.status(500).send({ message: err.message });
+                    });
+            } else if (data) {
+                res.status(400).send({ message: "You cannot register more than one child!" });
+            }
         })
-            .then(async (user) => {
-                console.log(`${user.parentId}`);
-                let connectToken = await ConnectToken.createToken(user);
-                res.status(201).send({
-                    connectToken: connectToken
-                });
-            })
             .catch(err => {
                 res.status(500).send({ message: err.message });
             });
@@ -195,13 +206,27 @@ exports.childrenMainPage = (req, res) => {
     Children.findOne({
         where: { id: id }
     }).then(child => {
-        if (child) {
-            res.status(200).send({
-                id: id,
-                message: `Perangkat ini terhubung dengan perangkat orang tua dengan ID: ${child.parentId}. TERIMA KASIH`,
-            })
-        }
+        ConnectToken.findOne({
+            where: { childrenId: child.id }
+        }).then(data => {
+            if (data) {
+                res.status(200).send({
+                    id: id,
+                    message: `Perangkat ini terhubung dengan perangkat orang tua dengan ID: ${child.parentId} melalui token ${data.token}. TERIMA KASIH`,
+                })
+            } else {
+                res.status(404).send({
+                    message: "Perangkat ini tidak terhubung ke mana pun. Mungkin token yang dimasukkan salah"
+                })
+            }
+        })
+            .catch(err => {
+                res.status(500).send({ message: err.message });
+            });
     })
+        .catch(err => {
+            res.status(500).send({ message: err.message });
+        });
 }
 
 // Retrieve all parents from database.
@@ -213,8 +238,7 @@ exports.findAll = (req, res) => {
         order: [['email', 'ASC']],
         where: condition, limit, offset,
         include: [{
-            model: Children,
-            as: 'childrens'
+            model: Children
         }]
     }).then(data => {
         const response = getPagingData(data, page, limit);
@@ -234,7 +258,6 @@ exports.findOne = (req, res) => {
         where: { id: id },
         include: [{
             model: Children,
-            as: 'childrens',
             where: { parentId: id }
         }]
     })
@@ -347,7 +370,7 @@ exports.deleteOne = (req, res) => {
         where: { id: id },
         include: [{
             model: Children,
-            as: 'childrens',
+            attributes: ['id', 'createdAt', 'updatedAt'],
             where: { parentId: id },
         }]
     })
@@ -386,18 +409,30 @@ exports.deleteAll = (req, res) => {
 exports.profile = (req, res) => {
     const id = req.params.id;
     Parent.findOne({
-        where: { id: id },
-        attributes: ['id', 'name', 'email'],
-        include: [{
-            model: Children,
-            as: 'childrens',
-            where: { parentId: id },
-            attributes: ['id']
-        }]
-    })
-        .then(data => {
-            res.status(200).send(data)
+        where: { id: id }
+    }).then(parent => {
+        Children.findOne({
+            where: { parentId: parent.id }
+        }).then(child => {
+            if (child) {
+                res.status(200).send({
+                    id: id,
+                    name: parent.name,
+                    email: parent.email,
+                    children: child.id
+                })
+            } else {
+                res.status(200).send({
+                    id: id,
+                    name: parent.name,
+                    email: parent.email
+                })
+            }
         })
+            .catch(err => {
+                res.status(500).send({ message: err.message });
+            });
+    })
         .catch(err => {
             res.status(500).send({ message: err.message });
         });
