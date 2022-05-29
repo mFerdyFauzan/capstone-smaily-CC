@@ -370,11 +370,13 @@ exports.deleteOne = (req, res) => {
         where: { id: id },
         include: [{
             model: Children,
-            attributes: ['id', 'createdAt', 'updatedAt'],
             where: { parentId: id },
         }]
     })
-        .then(parent => {
+        .then(data => {
+            Children.destroy({
+                where: { parentId: null }
+            })
             res.status(200).send({
                 message: `Parent User ${id} has been deleted along with the associated children account`
             });

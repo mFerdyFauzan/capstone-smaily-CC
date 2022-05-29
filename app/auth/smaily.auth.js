@@ -1,8 +1,10 @@
 const db = require("../models");
 const Parent = db.parent;
 const ConnectToken = db.connectToken;
+const Children = db.children;
 const jwt = require("jsonwebtoken");
 const config = require("./auth.config");
+const { children } = require("../models");
 const { TokenExpiredError } = jwt;
 
 const catchError = (err, res) => {
@@ -39,9 +41,18 @@ async function verifyConnectToken(req, res, next) {
         return;
     } else {
         if (ConnectToken.verifyExpiration(cekToken)) {
+            Children.findOne({
+                where: { id: cekToken.childrenId }
+            }).then(child => {
+                if (child) {
+                    Children.destroy({
+                        where: { id: child.id }
+                    })
+                }
+            })
             ConnectToken.destroy({
                 where: { id: cekToken.id }
-            });
+            })
             res.status(403).json({
                 message: "Connect token was expired. Please make a new register child request",
             });
