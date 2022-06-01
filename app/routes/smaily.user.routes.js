@@ -39,11 +39,21 @@ module.exports = function (app) {
         "/api/children/:id",
         [authJwt.verifyToken],
         controller.childrenMainPage
-    )
+    );
+    app.get(
+        "/api/children/:id/locks",
+        [authJwt.verifyToken],
+        controller.getLockApp
+    );
     app.get(
         "/api/user/:id/profile",
         [authJwt.verifyToken, authJwt.isParentOrAdmin],
         controller.profile
+    );
+    app.put(
+        "/api/user/:id/setLockApp",
+        [authJwt.verifyToken, authJwt.isParent],
+        controller.setLockApp
     );
     app.put(
         "/api/user/:id/changePassword",

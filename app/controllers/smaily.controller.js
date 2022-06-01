@@ -1,12 +1,12 @@
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../models");
-const { parent: Parent, children: Children, refreshToken: RefreshToken, connectToken: ConnectToken } = db;
+const { parent: Parent, children: Children, refreshToken: RefreshToken, connectToken: ConnectToken, lock: Lock, lock_app: Lock_App } = db;
 const Op = db.Sequelize.Op;
 const config = require("../auth/auth.config");
 const { nanoid } = require("nanoid");
-const req = require("express/lib/request");
-const res = require("express/lib/response");
+var models = require("../models");
+//var Promise = models.Sequelize.Promise;
 
 exports.initialize = () => {
     // Admin user
@@ -30,6 +30,14 @@ exports.initialize = () => {
         })
             .then(async (user) => {
                 let connectToken = await ConnectToken.createToken(user);
+                Lock.create({
+                    parentId: user.parentId,
+                    childrenId: user.id
+                }).then(data => {
+                    Lock_App.upsert(
+                        { name: 'Facebook', lockId: data.id }
+                    );
+                });
                 console.log(`Parent ${parent.id} has registered and connected to their Child ${user.id}`);
             })
             .catch(err => { console.log(err); });
@@ -48,6 +56,15 @@ exports.initialize = () => {
         })
             .then(async (user) => {
                 let connectToken = await ConnectToken.createToken(user);
+                let lock = await Lock.create({
+                    parentId: user.parentId,
+                    childrenId: user.id
+                }).then(data => {
+                    Lock_App.upsert({
+                        name: 'Instagram',
+                        lockId: data.id
+                    });
+                });
                 console.log(`Parent ${parent.id} has registered and connected to their Child ${user.id}`);
             })
             .catch(err => { console.log(err); });
@@ -101,6 +118,14 @@ exports.logInChildren = async (req, res) => {
                 where: { id: data.childrenId }
             })
                 .then(child => {
+                    Lock.create({
+                        parentId: child.parentId,
+                        childrenId: child.id
+                    }).then(locks => {
+                        Lock_App.upsert({
+                            lockId: locks.id
+                        });
+                    })
                     const token = jwt.sign({ id: child.id }, config.secret, {
                         expiresIn: config.jwtExpiration // 24 hours
                     });
@@ -497,6 +522,92 @@ exports.refreshToken = async (req, res) => {
         return res.status(500).send({ message: err });
     }
 };
+
+exports.getLockApp = (req, res) => {
+    Lock.findOne({
+        where: { childrenId: req.params.id }
+    }).then(lock => {
+        if (lock) {
+            Lock_App.findAndCountAll({
+                where: { lockId: lock.id },
+                attributes: ['name', 'isLocked']
+            }).then(data => {
+                res.status(200).send(data)
+            })
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message
+                    })
+                });
+        }
+        else {
+            res.status(404).send({
+                message: 'Lock not found'
+            })
+        }
+    })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message
+            })
+        });
+}
+
+exports.setLockApp = (req, res) => {
+    Lock.findOne({
+        where: { parentId: req.params.id }
+    }).then(async (lock) => {
+        if (lock) {
+            Lock_App.findOne({
+                where: { name: req.body.app, lockId: lock.id }
+            }).then(found => {
+                if (found && req.body.lock === found.isLocked) {
+                    res.status(400).send({
+                        message: `Application ${found.name} lock status remains the same`
+                    });
+                } else if (found && req.body.lock == !found.isLocked) {
+                    Lock_App.update({
+                        isLocked: req.body.lock
+                    }, {
+                        where: { id: found.id }
+                    });
+                    res.status(200).send({
+                        message: `Application ${found.name} lock status has been updated`
+                    });
+                } else {
+                    Lock_App.create({
+                        name: req.body.app,
+                        isLocked: req.body.lock,
+                        lockId: lock.id
+                    }).then(result => {
+                        res.status(201).send({
+                            message: `Application ${result.name} lock status has been updated`
+                        });
+                    })
+                        .catch(err => {
+                            res.status(500).send({
+                                message: err.message
+                            })
+                        });
+                }
+            })
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message
+                    })
+                });
+        } else {
+            res.status(404).send({
+                message: `Lock not found`
+            });
+        }
+    })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message
+            })
+        });
+}
 
 const getPagingData = (data, page, limit) => {
     const { count: totalItems, rows: users } = data;

@@ -114,19 +114,19 @@
 			"response": []
 		},
 		{
-			"name": "Change Password",
+			"name": "Set Lock App",
 			"request": {
 				"method": "PUT",
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im9vYkFoRGNCbE8iLCJpYXQiOjE2NTM0Nzg2OTAsImV4cCI6MTY1MzQ3ODk5MH0.UgGH0dS14TPM4DvznsjETE9hglg1QsW6TOjWQfyQIvg",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImtXd0FPN3RwVUYiLCJpYXQiOjE2NTQwOTgyMDQsImV4cCI6MTY1NDA5ODUwNH0.WdfSUi1geXotjOed_7a65FSDAfg4-CxRVSbneQI7eAA",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"password\": \"tes12njcHANSJ.\"\r\n}",
+					"raw": "{\r\n    \"app\": \"Youtube\",\r\n    \"lock\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -134,7 +134,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/user/changepassword/oobAhDcBlO",
+					"raw": "http://localhost:5000/api/user/kWwAO7tpUF/setLockApp",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -143,8 +143,46 @@
 					"path": [
 						"api",
 						"user",
+						"kWwAO7tpUF",
+						"setLockApp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change Password",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlBaZ2tLMElTc1IiLCJpYXQiOjE2NTM4MTg3NDAsImV4cCI6MTY1MzgxOTA0MH0.TBw4Z6Q4GCjAyL10np0iPOKCDAON11pfkMNHAb1B2P4",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"PNZSO2BNnjasbx1._!\",\r\n    \"newPassword\": \"tes12njcHANSJ.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/user/PZgkK0ISsR/changepassword/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"user",
+						"PZgkK0ISsR",
 						"changepassword",
-						"oobAhDcBlO"
+						""
 					]
 				}
 			},
@@ -268,12 +306,12 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IndaUy12NkpuME0iLCJpYXQiOjE2NTM2NjU2OTIsImV4cCI6MTY1MzY2NTk5Mn0.RsFtltd88f6JWx80NZnUpn1qReBngtyfN_DoszoU-x4",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InNHdm1YN2JTenUiLCJpYXQiOjE2NTM4MTg2ODMsImV4cCI6MTY1MzgxODk4M30.4ygUy-orj0peHKAnssCiss-UPqmLDWIQh-GarVMLdY8",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/children/wZS-v6Jn0M",
+					"raw": "http://localhost:5000/api/children/sGvmX7bSzu",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -282,7 +320,35 @@
 					"path": [
 						"api",
 						"children",
-						"wZS-v6Jn0M"
+						"sGvmX7bSzu"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Applications Lock Status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpXTVRuRjFScXEiLCJpYXQiOjE2NTQwOTgyNjMsImV4cCI6MTY1NDA5ODU2M30.p99f111bAONZWsdjbRbtFmOwMbyurT7WjnS16IyVBk0",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/api/children/jWMTnF1Rqq/locks",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"children",
+						"jWMTnF1Rqq",
+						"locks"
 					]
 				}
 			},

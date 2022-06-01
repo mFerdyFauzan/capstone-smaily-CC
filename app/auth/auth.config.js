@@ -6,5 +6,5 @@ module.exports = {
     jwtExpiration: 300,          // 5 minute
     jwtRefreshExpiration: 600,  // 10 minutes
     connectTokenExpiration: 60, // 1 minute
-    //onnectRefreshExpiration: 120 // 2 minutes
+    //connectRefreshExpiration: 120 // 2 minutes
 };
