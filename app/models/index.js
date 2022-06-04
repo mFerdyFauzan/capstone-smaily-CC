@@ -11,6 +11,7 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
         idle: dbConfig.pool.idle
     }
 });
+
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
@@ -60,38 +61,4 @@ db.lock.hasOne(db.lock_app, {
 db.lock_app.belongsTo(db.lock, {
     foreignKey: 'lockId', target: 'id'
 });
-/*
-db.role = require("./smaily.role.model")(sequelize, Sequelize);
-db.comment = require("./smaily.comment.model")(sequelize, Sequelize);
-db.history = require("./smaily.history.model")(sequelize, Sequelize);
-/*
-db.role.belongsToMany(db.user, {
-    through: "user_roles",
-    foreignKey: "roleId",
-    otherKey: "userId"
-});
-db.user.belongsToMany(db.role, {
-    through: "user_roles",
-    foreignKey: "userId",
-    otherKey: "roleId"
-});
-db.user.hasMany(db.history, { as: "histories" });
-db.user.hasMany(db.comment, { as: "comments" });
-db.comment.belongsTo(db.user, {
-    foreignKey: "userId",
-    as: "user"
-});
-db.comment.belongsTo(db.history, {
-    foreignKey: "historyId",
-    as: "history"
-});
-db.history.hasMany(db.comment, { as: "comment" });
-db.history.belongsTo(db.user, {
-    foreignKey: {
-        type: Sequelize.UUID,
-        allowNull: false
-    }
-});
-db.ROLES = ["admin", "parent", "children"];
-*/
 module.exports = db;
