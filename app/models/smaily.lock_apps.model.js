@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true
         },
         name: {
-            type: Sequelize.STRING, //Sequelize.JSONB, 
+            type: Sequelize.STRING,
             allowNull: false,
             defaultValue: 'Youtube'
         },

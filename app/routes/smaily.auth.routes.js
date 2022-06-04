@@ -33,8 +33,8 @@ module.exports = function (app) {
     );
     app.post("/api/auth/login", controller.logIn);
     app.post("/api/auth/refreshtoken", controller.refreshToken);
-    app.post(
+    /*app.post(
         "/api/auth/logout",
         controller.logOut
-    );
+    );*/
 };

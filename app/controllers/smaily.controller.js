@@ -12,7 +12,7 @@ exports.initialize = () => {
     // Admin user
     Parent.create({
         id: nanoid(10),
-        name: "Admin",
+        name: "Yanuar",
         password: bcrypt.hashSync('$4dm1n5m4i1yP4reNt%', 10),
         email: 'admin@smaily.com',
         role: "admin",
@@ -464,7 +464,7 @@ exports.profile = (req, res) => {
             res.status(500).send({ message: err.message });
         });
 }
-
+/*
 // For parents to log out (masih belom bisa)
 exports.logOut = async (req, res) => {
     const { refreshToken: requestToken } = req.body;
@@ -475,21 +475,20 @@ exports.logOut = async (req, res) => {
         let refreshToken = await RefreshToken.findOne({ where: { token: requestToken } });
         console.log(refreshToken)
         if (!refreshToken) {
-            res.status(403).json({ message: "Refresh token is not in database! User hal aready been logged out!" });
+            res.status(403).json({ message: "Refresh token is not in database! User has aready been logged out!" });
             return;
         }
         if (RefreshToken.verifyExpiration(refreshToken)) {
             RefreshToken.destroy({ where: { id: refreshToken.id } });
-            res.status(200).json({
+            res.status(200).send({
                 message: "You have been logged out",
             });
-            return;
         }
     } catch (err) {
         return res.status(500).send({ message: err });
     }
 }
-
+*/
 // To retrieve new access token to access the app
 exports.refreshToken = async (req, res) => {
     const { refreshToken: requestToken } = req.body;

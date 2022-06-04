@@ -11,17 +11,17 @@ module.exports = (sequelize, Sequelize) => {
         name: {
             type: Sequelize.STRING,
             allowNull: false,
-            /*
             validate: {
-                isAlpha: true
-            } */
+                is: /([A-Z])([a-z])\w+/,
+                notIn: [['admin', 'Admin', 'ADMIN']]
+            }
         },
         password: {
             type: Sequelize.STRING,
             allowNull: false,
             validate: {
-                not: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$/,
-                len: [8, 255]
+                not: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+                //len: [8, 255]
             }
         },
         email: {
@@ -30,7 +30,6 @@ module.exports = (sequelize, Sequelize) => {
             unique: true,
             validate: {
                 isEmail: true,
-                //isAlphanumeric: true,
                 isLowercase: true
             }
         },
