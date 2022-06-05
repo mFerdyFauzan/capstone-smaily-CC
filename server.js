@@ -12,7 +12,7 @@ var corsOptions = {
 };
 // Sync the database and initialize admin the users
 db.sequelize.sync({ force: true }).then(() => {
-    console.log("Alter and re-sync db.");
+    console.log("Re-sync db.");
     controller.initialize();
 });
 //

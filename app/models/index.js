@@ -21,6 +21,7 @@ db.refreshToken = require("./smaily.refreshToken.model")(sequelize, Sequelize);
 db.connectToken = require("./smaily.connectToken.model")(sequelize, Sequelize);
 db.lock = require("./smaily.lock.model")(sequelize, Sequelize);
 db.lock_app = require("./smaily.lock_apps.model")(sequelize, Sequelize);
+db.lock_url = require("./smaily.lock_url.model")(sequelize, Sequelize);
 db.parent.hasOne(db.children);
 db.children.belongsTo(db.parent, {
     foreignKey: "parentId",
@@ -59,6 +60,9 @@ db.lock.hasOne(db.lock_app, {
     foreignKey: 'lockId', targetKey: 'id'
 });
 db.lock_app.belongsTo(db.lock, {
+    foreignKey: 'lockId', target: 'id'
+});
+db.lock_url.belongsTo(db.lock, {
     foreignKey: 'lockId', target: 'id'
 });
 module.exports = db;

@@ -1,12 +1,14 @@
 const bcrypt = require("bcryptjs/dist/bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../models");
-const { parent: Parent, children: Children, refreshToken: RefreshToken, connectToken: ConnectToken, lock: Lock, lock_app: Lock_App } = db;
+const {
+    parent: Parent, children: Children, refreshToken: RefreshToken,
+    connectToken: ConnectToken, lock: Lock, lock_app: Lock_App,
+    lock_url: Lock_URL
+} = db;
 const Op = db.Sequelize.Op;
 const config = require("../auth/auth.config");
 const { nanoid } = require("nanoid");
-var models = require("../models");
-//var Promise = models.Sequelize.Promise;
 
 exports.initialize = () => {
     // Admin user
@@ -34,7 +36,7 @@ exports.initialize = () => {
                     parentId: user.parentId,
                     childrenId: user.id
                 }).then(data => {
-                    Lock_App.upsert(
+                    Lock_App.create(
                         { name: 'Facebook', lockId: data.id }
                     );
                 });
@@ -60,7 +62,7 @@ exports.initialize = () => {
                     parentId: user.parentId,
                     childrenId: user.id
                 }).then(data => {
-                    Lock_App.upsert({
+                    Lock_App.create({
                         name: 'Instagram',
                         lockId: data.id
                     });
@@ -122,12 +124,15 @@ exports.logInChildren = async (req, res) => {
                         parentId: child.parentId,
                         childrenId: child.id
                     }).then(locks => {
-                        Lock_App.upsert({
+                        Lock_App.create({
                             lockId: locks.id
                         });
+                        Lock_URL.create({
+                            lockId: locks.id
+                        })
                     })
                     const token = jwt.sign({ id: child.id }, config.secret, {
-                        expiresIn: config.jwtExpiration // 24 hours
+                        expiresIn: config.jwtExpiration
                     });
                     if (child) {
                         res.send({
@@ -210,15 +215,6 @@ exports.logIn = async (req, res, next) => {
                 accessToken: token,
                 refreshToken: refreshToken
             });
-            /*
-            let authorities = [];
-            user.getRoles().then(roles => {
-                for (let i = 0; i < roles.length; i++) {
-                    authorities.push("ROLE_" + roles[i].name.toUpperCase());
-                }
-                
-            });
-            */
         })
         .catch(err => {
             res.status(500).send({ message: err.message });
@@ -464,31 +460,7 @@ exports.profile = (req, res) => {
             res.status(500).send({ message: err.message });
         });
 }
-/*
-// For parents to log out (masih belom bisa)
-exports.logOut = async (req, res) => {
-    const { refreshToken: requestToken } = req.body;
-    if (requestToken == null) {
-        return res.status(403).json({ message: "Refresh Token is required!" });
-    }
-    try {
-        let refreshToken = await RefreshToken.findOne({ where: { token: requestToken } });
-        console.log(refreshToken)
-        if (!refreshToken) {
-            res.status(403).json({ message: "Refresh token is not in database! User has aready been logged out!" });
-            return;
-        }
-        if (RefreshToken.verifyExpiration(refreshToken)) {
-            RefreshToken.destroy({ where: { id: refreshToken.id } });
-            res.status(200).send({
-                message: "You have been logged out",
-            });
-        }
-    } catch (err) {
-        return res.status(500).send({ message: err });
-    }
-}
-*/
+
 // To retrieve new access token to access the app
 exports.refreshToken = async (req, res) => {
     const { refreshToken: requestToken } = req.body;
@@ -522,12 +494,13 @@ exports.refreshToken = async (req, res) => {
     }
 };
 
+// To retrieve lock statuses of children's applications
 exports.getLockApp = (req, res) => {
     Lock.findOne({
-        where: { childrenId: req.params.id }
+        where: { parentId: req.params.id }
     }).then(lock => {
         if (lock) {
-            Lock_App.findAndCountAll({
+            Lock_App.findAll({
                 where: { lockId: lock.id },
                 attributes: ['name', 'isLocked']
             }).then(data => {
@@ -540,8 +513,26 @@ exports.getLockApp = (req, res) => {
                 });
         }
         else {
-            res.status(404).send({
-                message: 'Lock not found'
+            Lock.findOne({
+                where: { childrenId: req.params.id }
+            }).then(found => {
+                if (found) {
+                    Lock_App.findAll({
+                        where: { lockId: found.id },
+                        attributes: ['name', 'isLocked']
+                    }).then(data => {
+                        res.status(200).send(data)
+                    })
+                        .catch(err => {
+                            res.status(500).send({
+                                message: err.message
+                            })
+                        });
+                } else {
+                    res.status(404).send({
+                        message: 'Lock not found'
+                    })
+                }
             })
         }
     })
@@ -552,6 +543,56 @@ exports.getLockApp = (req, res) => {
         });
 }
 
+// To retrieve URL lock statuses of children's browser
+exports.getLockUrl = (req, res) => {
+    Lock.findOne({
+        where: { parentId: req.params.id }
+    }).then(lock => {
+        if (lock) {
+            Lock_URL.findAll({
+                where: { lockId: lock.id },
+                attributes: ['url', 'isLocked']
+            }).then(data => {
+                res.status(200).send(data)
+            })
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message
+                    })
+                });
+        }
+        else {
+            Lock.findOne({
+                where: { childrenId: req.params.id }
+            }).then(found => {
+                if (found) {
+                    Lock_URL.findAll({
+                        where: { lockId: found.id },
+                        attributes: ['url', 'isLocked']
+                    }).then(data => {
+                        res.status(200).send(data)
+                    })
+                        .catch(err => {
+                            res.status(500).send({
+                                message: err.message
+                            })
+                        });
+                } else {
+                    res.status(404).send({
+                        message: 'Lock not found'
+                    })
+                }
+            })
+        }
+    })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message
+            })
+        });
+}
+
+// To set the lock for applications in children's device
 exports.setLockApp = (req, res) => {
     Lock.findOne({
         where: { parentId: req.params.id }
@@ -564,7 +605,7 @@ exports.setLockApp = (req, res) => {
                     res.status(400).send({
                         message: `Application ${found.name} lock status remains the same`
                     });
-                } else if (found && req.body.lock == !found.isLocked) {
+                } else if (found && (req.body.lock == !found.isLocked)) {
                     Lock_App.update({
                         isLocked: req.body.lock
                     }, {
@@ -608,6 +649,64 @@ exports.setLockApp = (req, res) => {
         });
 }
 
+// To set the lock for URLs in children's device
+exports.setLockUrl = (req, res) => {
+    Lock.findOne({
+        where: { parentId: req.params.id }
+    }).then(async (lock) => {
+        if (lock) {
+            Lock_URL.findOne({
+                where: { url: req.body.url, lockId: lock.id }
+            }).then(found => {
+                if (found && req.body.lock === found.isLocked) {
+                    res.status(400).send({
+                        message: `URL ${found.url} lock status remains the same`
+                    });
+                } else if (found && (req.body.lock == !found.isLocked)) {
+                    Lock_URL.update({
+                        isLocked: req.body.lock
+                    }, {
+                        where: { id: found.id }
+                    });
+                    res.status(200).send({
+                        message: `URL ${found.url} lock status has been updated`
+                    });
+                } else {
+                    Lock_URL.create({
+                        url: req.body.url,
+                        isLocked: req.body.lock,
+                        lockId: lock.id
+                    }).then(result => {
+                        res.status(201).send({
+                            message: `URL ${result.url} lock status has been updated`
+                        });
+                    })
+                        .catch(err => {
+                            res.status(500).send({
+                                message: err.message
+                            })
+                        });
+                }
+            })
+                .catch(err => {
+                    res.status(500).send({
+                        message: err.message
+                    })
+                });
+        } else {
+            res.status(404).send({
+                message: `Lock not found`
+            });
+        }
+    })
+        .catch(err => {
+            res.status(500).send({
+                message: err.message
+            })
+        });
+}
+
+// To show the data in pages
 const getPagingData = (data, page, limit) => {
     const { count: totalItems, rows: users } = data;
     const currentPage = page ? +page : 0;
@@ -615,114 +714,9 @@ const getPagingData = (data, page, limit) => {
     return { totalItems, users, totalPages, currentPage };
 };
 
+// For pagination
 const getPagination = (page, size) => {
     const limit = size ? +size : 4;
     const offset = page ? page * limit : 0;
     return { limit, offset };
 };
-/*
-exports.createHistory = (req, res) => {
-    const username = req.body.username;
-    User.findOne({ where: { username: username } })
-        .then(user => {
-            if (user) {
-                const history = History.create({
-                    url: req.body.url,
-                    userId: user.id
-                })
-                res.status(201).send({
-                    message: `New history has been added for user ${req.body.username}`,
-                    url: history.url,
-                    userId: history.userId
-                });
-            } else {
-                res.status(404).send({
-                    message: `Cannot find user with username=${username}.`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message
-            });
-        });
-}
-
-exports.createComment = (req, res) => {
-    const username = req.body.username;
-    User.findOne({ where: { username: username } })
-        .then(user => {
-            if (user) {
-                History.findOne({
-                    where: { userId: user.id }
-                }).then(histories => {
-                    if (histories) {
-                        const comment = Comment.create({
-                            text: req.body.text,
-                            userId: user.id,
-                            historyId: histories.id
-                        })
-                        res.status(201).send({
-                            message: `User ${username} has commented on ${histories.url}`,
-                            comment
-                        })
-                    }
-                    else {
-                        res.status(404).send({
-                            message: "History does not exist. Cannot make comment."
-                        })
-                    }
-                })
-            } else {
-                res.status(404).send({
-                    message: `Cannot find user with username=${username}.`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message
-            });
-        });
-}
-
-exports.findHistoryById = (req, res) => {
-    const username = req.body.username;
-    User.findOne({ where: { username: username } })
-        .then(user => {
-            if (user) {
-                History.findOne({
-                    where: { userId: user.id }
-                }).then(histories => {
-                    res.status(200).send(histories);
-                })
-            } else {
-                res.status(404).send({
-                    message: `Cannot find user with username=${username}.`
-                });
-            }
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message
-            });
-        });
-}
-
-exports.findCommentById = (id) => {
-    return Comment.findByPk(id, { include: ["history"] })
-        .then((comment) => {
-            return comment;
-        })
-        .catch((err) => {
-            console.log("Error while finding comment: ", err);
-        })
-}
-
-exports.findAllHistoryWithComments = () => {
-    return History.findAll({ include: ["comment"] })
-        .then((history) => {
-            return history;
-        });
-};
-*/

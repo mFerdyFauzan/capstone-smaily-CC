@@ -12,12 +12,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/",
+					"raw": "http://35.198.213.147/",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						""
 					]
@@ -40,12 +42,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/auth/register",
+					"raw": "http://35.198.213.147/api/auth/register",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"auth",
@@ -70,12 +74,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/auth/login",
+					"raw": "http://35.198.213.147/api/auth/login",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"auth",
@@ -97,12 +103,14 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/user/jf2A-wpknH/profile",
+					"raw": "http://35.198.213.147/api/user/jf2A-wpknH/profile",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"user",
@@ -134,17 +142,58 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/user/kWwAO7tpUF/setLockApp",
+					"raw": "http://35.198.213.147/api/user/kWwAO7tpUF/setLockApp",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"user",
 						"kWwAO7tpUF",
 						"setLockApp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Lock URL",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlhvNkRqUWNEMHciLCJpYXQiOjE2NTQ0MjU4MTcsImV4cCI6MTY4NTk4Mjc0M30.emFRJeqHwhwDBbYPcOOLO7VSxHCg3kNMHlNydJAbol8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"url\": \"http://www.facebook.com\",\r\n    \"lock\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://35.198.213.147/api/user/Xo6DjQcD0w/setLockUrl",
+					"protocol": "http",
+					"host": [
+						"35",
+						"198",
+						"213",
+						"147"
+					],
+					"path": [
+						"api",
+						"user",
+						"Xo6DjQcD0w",
+						"setLockUrl"
 					]
 				}
 			},
@@ -171,12 +220,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/user/PZgkK0ISsR/changepassword/",
+					"raw": "http://35.198.213.147/api/user/PZgkK0ISsR/changepassword/",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"user",
@@ -203,46 +254,18 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/auth/refreshtoken",
+					"raw": "http://35.198.213.147/api/auth/refreshtoken",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"auth",
 						"refreshtoken"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Log Out",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"refreshToken\": \"7604b03e-8e0b-48dc-864c-1f9dfbdc308d\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:5000/api/user/logout",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "5000",
-					"path": [
-						"api",
-						"user",
-						"logout"
 					]
 				}
 			},
@@ -260,12 +283,14 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/auth/tpDVsPAqUa/registerChildren",
+					"raw": "http://35.198.213.147/api/auth/tpDVsPAqUa/registerChildren",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"auth",
@@ -282,12 +307,14 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:5000/api/auth/login/children/Njjgd",
+					"raw": "http://35.198.213.147/api/auth/login/children/Njjgd",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"auth",
@@ -311,12 +338,14 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/children/sGvmX7bSzu",
+					"raw": "http://35.198.213.147/api/children/sGvmX7bSzu",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"children",
@@ -338,17 +367,50 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/children/jWMTnF1Rqq/locks",
+					"raw": "http://35.198.213.147/api/children/jWMTnF1Rqq/locks",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"children",
 						"jWMTnF1Rqq",
 						"locks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get URLs Lock Status",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlhvNkRqUWNEMHciLCJpYXQiOjE2NTQ0MjU4MTcsImV4cCI6MTY4NTk4Mjc0M30.emFRJeqHwhwDBbYPcOOLO7VSxHCg3kNMHlNydJAbol8",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://35.198.213.147/api/children/Xo6DjQcD0w/lock/url",
+					"protocol": "http",
+					"host": [
+						"35",
+						"198",
+						"213",
+						"147"
+					],
+					"path": [
+						"api",
+						"children",
+						"Xo6DjQcD0w",
+						"lock",
+						"url"
 					]
 				}
 			},
@@ -366,12 +428,14 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/admin/find",
+					"raw": "http://35.198.213.147/api/admin/find",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"admin",
@@ -393,12 +457,14 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/admin/find/bkyxVqYrwK",
+					"raw": "http://35.198.213.147/api/admin/find/bkyxVqYrwK",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"admin",
@@ -430,12 +496,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/admin/update/cl5Tj2RNDx",
+					"raw": "http://35.198.213.147/api/admin/update/cl5Tj2RNDx",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"admin",
@@ -458,12 +526,14 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/admin/deleteUser/O4-D5m4MPi",
+					"raw": "http://35.198.213.147/api/admin/deleteUser/O4-D5m4MPi",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"admin",
@@ -486,12 +556,14 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:5000/api/admin/drop",
+					"raw": "http://35.198.213.147/api/admin/drop",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"35",
+						"198",
+						"213",
+						"147"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"admin",
