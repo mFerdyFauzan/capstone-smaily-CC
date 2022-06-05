@@ -77,38 +77,67 @@ exports.initialize = () => {
 // To register / add children by parent
 exports.registerChildren = (req, res) => {
     const id = req.params.id;
-    Parent.findOne({
-        where: { id: id }
-    }).then(parent => {
-        Children.findOne({
-            where: { parentId: parent.id }
-        }).then(data => {
-            if (!data) {
-                Children.create({
-                    id: nanoid(10),
-                    parentId: id
-                })
-                    .then(async (user) => {
-                        console.log(`${user.parentId}`);
-                        let connectToken = await ConnectToken.createToken(user);
-                        res.status(201).send({
-                            connectToken: connectToken
-                        });
-                    })
-                    .catch(err => {
-                        res.status(500).send({ message: err.message });
+    Children.findOne({
+        where: { parentId: id }
+    }).then(data => {
+        if (!data) {
+            Children.create({
+                id: nanoid(10),
+                parentId: id
+            })
+                .then(async (user) => {
+                    let connectToken = await ConnectToken.createToken(user);
+                    res.status(201).send({
+                        connectToken: connectToken
                     });
-            } else if (data) {
-                res.status(400).send({ message: "You cannot register more than one child!" });
-            }
-        })
-            .catch(err => {
-                res.status(500).send({ message: err.message });
-            });
+                })
+                .catch(err => { res.status(500).send({ message: err.message }) });
+        } else if (data) {
+            Lock.findOne({
+                where: { childrenId: data.id }
+            }).then(found => {
+                if (found) {
+                    res.status(400).send({ message: "You cannot register more than one child!" });
+                }
+                else if (!found) {
+                    ConnectToken.findOne({
+                        where: { parentId: id }
+                    }).then(token => {
+                        if (token.expiryDate.getTime() > new Date().getTime()) {
+                            res.status(400).send({
+                                connectToken: token.token,
+                                message: `Please try again in ${((token.expiryDate.getTime() - new Date().getTime()) / 1000).toFixed()} seconds`
+                            });
+                        } else if (token.expiryDate.getTime() < new Date().getTime()) {
+                            Children.destroy({
+                                where: { id: token.childrenId }
+                            })
+                            ConnectToken.destroy({
+                                where: { id: token.id }
+                            }).then(() => {
+                                Children.create({
+                                    id: nanoid(10),
+                                    parentId: id
+                                })
+                                    .then(async (user) => {
+                                        let connectToken = await ConnectToken.createToken(user);
+                                        res.status(201).send({
+                                            connectToken: connectToken
+                                        });
+                                    })
+                                    .catch(err => { res.status(500).send({ message: err.message }) });
+                            })
+                                .catch(err => { res.status(500).send({ message: err.message }) });
+                        }
+                    })
+                }
+                else {
+                    res.status(500).send({ message: 'Internal server error. Failed to register children' })
+                }
+            })
+        }
     })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 }
 
 // for Children to login to the app
