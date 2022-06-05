@@ -34,8 +34,7 @@ Repository team Smaily sebagai tempat untuk menampung code backend untuk Capston
    - Install PostgreSQL
    - Buka pSQL (PostgreSQL Shell)
    - Masukkan konfigurasi koneksi seperti yang tertera pada file db.config.js
-   - 
-   ![Konfigurasi Koneksi](https://user-images.githubusercontent.com/69382273/172047643-8b0c76d9-d1a1-4694-8d6e-e94abe046dd7.png)
+      ![Konfigurasi Koneksi](https://user-images.githubusercontent.com/69382273/172047643-8b0c76d9-d1a1-4694-8d6e-e94abe046dd7.png)
 
 
 ###### **YANG SUDAH:**
