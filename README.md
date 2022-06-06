@@ -54,7 +54,7 @@ Repository team Smaily sebagai tempat untuk menampung code backend untuk Capston
 - [x] Role-based Authorization
 - [x] Autentikasi token
 - [x] Menyambungkan akun orangtua ke akun anak
-- [x] Get & Set kunci untuk aplikasi dan URL pada perangkat anak
+- [x] Get, Set, Delete kunci untuk aplikasi dan URL pada perangkat anak
 
 ###### **YANG BELOM:**
 - [ ] API untuk sambungin ke model ML (?)
