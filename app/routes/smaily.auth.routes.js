@@ -19,7 +19,7 @@ module.exports = function (app) {
         controller.registerParent
     );
     app.post(
-        "/api/auth/:id/registerChildren",
+        "/api/auth/register/:id/children",
         [authJwt.verifyToken, authJwt.isParent],
         controller.registerChildren
     );

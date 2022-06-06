@@ -17,6 +17,16 @@ module.exports = function (app) {
         controller.childrenMainPage
     );
     app.get(
+        "/api/user/:id/profile",
+        [authJwt.verifyToken, authJwt.isParent],
+        controller.profile
+    );
+    app.put(
+        "/api/user/:id/password",
+        [authJwt.verifyToken, authJwt.isParent],
+        controller.changePassword
+    );
+    app.get(
         "/api/children/:id/lock/app",
         [authJwt.verifyToken],
         controller.getLockApp
@@ -26,26 +36,26 @@ module.exports = function (app) {
         [authJwt.verifyToken],
         controller.getLockUrl
     );
-    app.get(
-        "/api/user/:id/profile",
-        [authJwt.verifyToken, authJwt.isParentOrAdmin],
-        controller.profile
-    );
     app.put(
-        "/api/user/:id/setLockApp",
+        "/api/user/:id/lock/app",
         [authJwt.verifyToken, authJwt.isParent],
         controller.setLockApp
     );
     app.put(
-        "/api/user/:id/setLockUrl",
+        "/api/user/:id/lock/url",
         [authJwt.verifyToken, authJwt.isParent],
         controller.setLockUrl
     );
-    app.put(
-        "/api/user/:id/changePassword",
+    app.delete(
+        "/api/user/:id/lock/app",
         [authJwt.verifyToken, authJwt.isParent],
-        controller.changePassword
+        controller.deleteLockApp
     );
+    app.delete(
+        "/api/user/:id/lock/url",
+        [authJwt.verifyToken, authJwt.isParent],
+        controller.deleteLockUrl
+    )
     app.get(
         "/api/admin/find",
         [authJwt.verifyToken, authJwt.isAdmin],
@@ -57,17 +67,17 @@ module.exports = function (app) {
         controller.findOne
     );
     app.put(
-        "/api/admin/update/:id",
+        "/api/admin/update/user/:id",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.update
     );
     app.delete(
-        "/api/admin/deleteUser/:id",
+        "/api/admin/delete/user/:id",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.deleteOne
     );
     app.delete(
-        "/api/admin/drop",
+        "/api/admin/delete/user",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.deleteAll
     );

@@ -39,6 +39,9 @@ exports.initialize = () => {
                     Lock_App.create(
                         { name: 'Facebook', lockId: data.id }
                     );
+                    Lock_URL.create(
+                        { url: 'http://www.facebook.com', lockId: data.id }
+                    );
                 });
                 console.log(`Parent ${parent.id} has registered and connected to their Child ${user.id}`);
             })
@@ -62,10 +65,12 @@ exports.initialize = () => {
                     parentId: user.parentId,
                     childrenId: user.id
                 }).then(data => {
-                    Lock_App.create({
-                        name: 'Instagram',
-                        lockId: data.id
-                    });
+                    Lock_App.create(
+                        { name: 'Instagram', lockId: data.id }
+                    );
+                    Lock_URL.create(
+                        { url: 'http://www.instagram.com', lockId: data.id }
+                    );
                 });
                 console.log(`Parent ${parent.id} has registered and connected to their Child ${user.id}`);
             })
@@ -160,6 +165,7 @@ exports.logInChildren = async (req, res) => {
                             lockId: locks.id
                         })
                     })
+                        .catch(err => { res.status(500).send({ message: err.message }) });
                     const token = jwt.sign({ id: child.id }, config.secret, {
                         expiresIn: config.jwtExpiration
                     });
@@ -173,13 +179,9 @@ exports.logInChildren = async (req, res) => {
                         res.send({ message: "Register failed" });
                     }
                 })
-                .catch(err => {
-                    res.status(500).send({ message: err.message });
-                });
+                .catch(err => { res.status(500).send({ message: err.message }) });
         })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 };
 
 // Register account for parents
@@ -203,9 +205,7 @@ exports.registerParent = (req, res) => {
                 res.send({ message: "Register failed." });
             }
         })
-            .catch(err => {
-                res.status(500).send({ message: err.message });
-            });
+            .catch(err => { res.status(500).send({ message: err.message }) });
     } else {
         res.status(400).send({ message: "Register failed. Please fill in all the fields to register your account" })
     }
@@ -245,9 +245,7 @@ exports.logIn = async (req, res, next) => {
                 refreshToken: refreshToken
             });
         })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 }
 
 // When children open the app, they will be showed with these informations
@@ -270,13 +268,9 @@ exports.childrenMainPage = (req, res) => {
                 })
             }
         })
-            .catch(err => {
-                res.status(500).send({ message: err.message });
-            });
+            .catch(err => { res.status(500).send({ message: err.message }) });
     })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 }
 
 // Retrieve all parents from database.
@@ -294,12 +288,7 @@ exports.findAll = (req, res) => {
         const response = getPagingData(data, page, limit);
         res.send(response);
     })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving data."
-            });
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 };
 // Find a single parent with an id
 exports.findOne = (req, res) => {
@@ -314,11 +303,7 @@ exports.findOne = (req, res) => {
         .then(data => {
             res.status(200).send(data);
         })
-        .catch(err => {
-            res.status(500).send({
-                message: "Error retrieving user with id=" + id
-            });
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 };
 
 // Change user's password
@@ -354,12 +339,7 @@ exports.changePassword = (req, res) => {
                                 });
                             }
                         })
-                        .catch(err => {
-                            res.status(500).send({
-                                message: "Error changing password of user with id=" + id,
-                                err: err.message
-                            });
-                        });
+                        .catch(err => { res.status(500).send({ message: err.message }) });
                 })
             } else {
                 res.status(400).send({
@@ -367,6 +347,7 @@ exports.changePassword = (req, res) => {
                 })
             }
         })
+        .catch(err => { res.status(500).send({ message: err.message }) });
 }
 
 // Update a user by the id in the request
@@ -399,15 +380,10 @@ exports.update = (req, res) => {
                         });
                     }
                 })
-                .catch(err => {
-                    res.status(500).send({
-                        message: "Error updating user with id=" + id,
-                        err: err.message
-                    });
-                });
+                .catch(err => { res.status(500).send({ message: err.message }) });
         })
     } else {
-        res.status(400).send({
+        res.status(404).send({
             message: "User ID was not found."
         })
     }
@@ -431,9 +407,7 @@ exports.deleteOne = (req, res) => {
                 message: `Parent User ${id} has been deleted along with the associated children account`
             });
         })
-        .catch(err => {
-            res.status(500).send({ message: err.message });
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 };
 
 // Delete all users from the database.
@@ -449,12 +423,7 @@ exports.deleteAll = (req, res) => {
             })
             res.send({ message: `${parent} Parent and Child accounts were deleted successfully!` });
         })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while removing all users."
-            });
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 };
 
 // These informations will be shown to the account
@@ -535,41 +504,12 @@ exports.getLockApp = (req, res) => {
             }).then(data => {
                 res.status(200).send(data)
             })
-                .catch(err => {
-                    res.status(500).send({
-                        message: err.message
-                    })
-                });
-        }
-        else {
-            Lock.findOne({
-                where: { childrenId: req.params.id }
-            }).then(found => {
-                if (found) {
-                    Lock_App.findAll({
-                        where: { lockId: found.id },
-                        attributes: ['name', 'isLocked']
-                    }).then(data => {
-                        res.status(200).send(data)
-                    })
-                        .catch(err => {
-                            res.status(500).send({
-                                message: err.message
-                            })
-                        });
-                } else {
-                    res.status(404).send({
-                        message: 'Lock not found'
-                    })
-                }
-            })
+                .catch(err => { res.status(500).send({ message: err.message }) });
+        } else {
+            res.status(404).send({ message: 'Lock not found' });
         }
     })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message
-            })
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 }
 
 // To retrieve URL lock statuses of children's browser
@@ -584,41 +524,12 @@ exports.getLockUrl = (req, res) => {
             }).then(data => {
                 res.status(200).send(data)
             })
-                .catch(err => {
-                    res.status(500).send({
-                        message: err.message
-                    })
-                });
-        }
-        else {
-            Lock.findOne({
-                where: { childrenId: req.params.id }
-            }).then(found => {
-                if (found) {
-                    Lock_URL.findAll({
-                        where: { lockId: found.id },
-                        attributes: ['url', 'isLocked']
-                    }).then(data => {
-                        res.status(200).send(data)
-                    })
-                        .catch(err => {
-                            res.status(500).send({
-                                message: err.message
-                            })
-                        });
-                } else {
-                    res.status(404).send({
-                        message: 'Lock not found'
-                    })
-                }
-            })
+                .catch(err => { res.status(500).send({ message: err.message }) });
+        } else {
+            res.status(404).send({ message: 'Lock not found' });
         }
     })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message
-            })
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 }
 
 // To set the lock for applications in children's device
@@ -653,29 +564,17 @@ exports.setLockApp = (req, res) => {
                             message: `Application ${result.name} lock status has been updated`
                         });
                     })
-                        .catch(err => {
-                            res.status(500).send({
-                                message: err.message
-                            })
-                        });
+                        .catch(err => { res.status(500).send({ message: err.message }) });
                 }
             })
-                .catch(err => {
-                    res.status(500).send({
-                        message: err.message
-                    })
-                });
+                .catch(err => { res.status(500).send({ message: err.message }) });
         } else {
             res.status(404).send({
                 message: `Lock not found`
             });
         }
     })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message
-            })
-        });
+        .catch(err => { res.status(500).send({ message: err.message }) });
 }
 
 // To set the lock for URLs in children's device
@@ -710,29 +609,69 @@ exports.setLockUrl = (req, res) => {
                             message: `URL ${result.url} lock status has been updated`
                         });
                     })
-                        .catch(err => {
-                            res.status(500).send({
-                                message: err.message
-                            })
-                        });
+                        .catch(err => { res.status(500).send({ message: err.message }) });
                 }
             })
-                .catch(err => {
-                    res.status(500).send({
-                        message: err.message
-                    })
-                });
+                .catch(err => { res.status(500).send({ message: err.message }) });
         } else {
             res.status(404).send({
                 message: `Lock not found`
             });
         }
     })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message
+        .catch(err => { res.status(500).send({ message: err.message }) });
+}
+
+// To delete the lock for an application on children's device
+exports.deleteLockApp = (req, res) => {
+    Lock.findOne({
+        where: { parentId: req.params.id }
+    }).then(lock => {
+        if (lock) {
+            Lock_App.findOne({
+                where: { name: req.body.app, lockId: lock.id }
+            }).then(found => {
+                if (found) {
+                    Lock_App.destroy({
+                        where: { id: found.id }
+                    })
+                    res.status(200).send({ message: `Lock for application ${req.body.app} has been deleted` });
+                } else {
+                    res.status(404).send({ message: `Cannot found lock for application ${req.body.app}, cannot delete` });
+                }
             })
-        });
+                .catch(err => { res.status(500).send({ message: err.message }) });
+        } else {
+            res.status(404).send({ message: 'Lock not found' });
+        }
+    })
+        .catch(err => { res.status(500).send({ message: err.message }) });
+}
+
+// To delete the lock for a URL on children's device
+exports.deleteLockUrl = (req, res) => {
+    Lock.findOne({
+        where: { parentId: req.params.id }
+    }).then(lock => {
+        if (lock) {
+            Lock_URL.findOne({
+                where: { url: req.body.url, lockId: lock.id }
+            }).then(found => {
+                if (found) {
+                    Lock_URL.destroy({
+                        where: { id: found.id }
+                    })
+                    res.status(200).send({ message: `Lock for URL ${req.body.url} has been deleted` });
+                } else {
+                    res.status(404).send({ message: `Cannot found lock for URL ${req.body.url}, cannot delete` });
+                }
+            })
+                .catch(err => { res.status(500).send({ message: err.message }) });
+        } else {
+            res.status(404).send({ message: 'Lock not found' });
+        }
+    })
+        .catch(err => { res.status(500).send({ message: err.message }) });
 }
 
 // To show the data in pages
