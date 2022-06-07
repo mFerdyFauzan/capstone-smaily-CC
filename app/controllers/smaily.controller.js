@@ -170,7 +170,7 @@ exports.logInChildren = async (req, res) => {
                         expiresIn: config.jwtExpiration
                     });
                     if (child) {
-                        res.send({
+                        res.status(200).send({
                             message: 'Children has been registered and connected to parent',
                             childrenId: child.id,
                             parentId: child.parentId,
