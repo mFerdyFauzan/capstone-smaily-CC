@@ -171,7 +171,9 @@ exports.logInChildren = async (req, res) => {
                     });
                     if (child) {
                         res.send({
-                            message: `Children ${child.id} is registered and connected to parent ${child.parentId} through connect token ${connectToken}`,
+                            message: 'Children has been registered and connected to parent',
+                            childrenId: child.id,
+                            parentId: child.parentId,
                             accessToken: token
                         });
                     }
