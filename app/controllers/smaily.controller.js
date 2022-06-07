@@ -178,7 +178,7 @@ exports.logInChildren = async (req, res) => {
                         });
                     }
                     else {
-                        res.send({ message: "Register failed" });
+                        res.status(500).send({ message: "Register failed" });
                     }
                 })
                 .catch(err => { res.status(500).send({ message: err.message }) });
@@ -465,18 +465,18 @@ exports.profile = (req, res) => {
 exports.refreshToken = async (req, res) => {
     const { refreshToken: requestToken } = req.body;
     if (requestToken == null) {
-        return res.status(403).json({ message: "Refresh Token is required!" });
+        return res.status(401).send({ message: "Refresh Token is required!" });
     }
     try {
         let refreshToken = await RefreshToken.findOne({ where: { token: requestToken } });
         if (!refreshToken) {
-            res.status(404).json({ message: "Refresh token is not in database!" });
+            res.status(404).send({ message: "Refresh token is not in database!" });
             return;
         }
         if (RefreshToken.verifyExpiration(refreshToken)) {
             RefreshToken.destroy({ where: { id: refreshToken.id } });
 
-            res.status(403).json({
+            res.status(403).send({
                 message: "Refresh token was expired. Please make a new signin request",
             });
             return;
@@ -485,7 +485,7 @@ exports.refreshToken = async (req, res) => {
         let newAccessToken = jwt.sign({ id: user.id }, config.secret, {
             expiresIn: config.jwtExpiration,
         });
-        return res.status(200).json({
+        return res.status(200).send({
             accessToken: newAccessToken,
             refreshToken: refreshToken.token,
         });
