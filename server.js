@@ -2,7 +2,6 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-//const { initialize, tes } = require("./app/controllers/smaily.controller");
 const controller = require("./app/controllers/smaily.controller");
 const app = express();
 const db = require("./app/models");

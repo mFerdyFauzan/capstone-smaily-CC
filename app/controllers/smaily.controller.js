@@ -204,7 +204,7 @@ exports.registerParent = (req, res) => {
                     email: user.email
                 });
             } else {
-                res.send({ message: "Register failed." });
+                res.status(500).send({ message: "Register failed." });
             }
         })
             .catch(err => { res.status(500).send({ message: err.message }) });
@@ -242,7 +242,6 @@ exports.logIn = async (req, res, next) => {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                role: user.role,
                 accessToken: token,
                 refreshToken: refreshToken
             });
@@ -497,7 +496,12 @@ exports.refreshToken = async (req, res) => {
 // To retrieve lock statuses of children's applications
 exports.getLockApp = (req, res) => {
     Lock.findOne({
-        where: { childrenId: req.params.id }
+        where: {
+            [Op.or]: [
+                { parentId: req.params.id },
+                { childrenId: req.params.id }
+            ]
+        }
     }).then(lock => {
         if (lock) {
             Lock_App.findAll({
@@ -517,7 +521,12 @@ exports.getLockApp = (req, res) => {
 // To retrieve URL lock statuses of children's browser
 exports.getLockUrl = (req, res) => {
     Lock.findOne({
-        where: { childrenId: req.params.id }
+        where: {
+            [Op.or]: [
+                { parentId: req.params.id },
+                { childrenId: req.params.id }
+            ]
+        }
     }).then(lock => {
         if (lock) {
             Lock_URL.findAll({

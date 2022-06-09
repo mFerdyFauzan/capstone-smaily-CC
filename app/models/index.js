@@ -56,11 +56,14 @@ db.lock.belongsTo(db.parent, {
 db.lock.belongsTo(db.children, {
     foreignKey: 'childrenId', targetKey: 'id'
 })
-db.lock.hasOne(db.lock_app, {
+db.lock.hasMany(db.lock_app, {
     foreignKey: 'lockId', targetKey: 'id'
 });
 db.lock_app.belongsTo(db.lock, {
     foreignKey: 'lockId', target: 'id'
+});
+db.lock.hasMany(db.lock_url, {
+    foreignKey: 'lockId', targetKey: 'id'
 });
 db.lock_url.belongsTo(db.lock, {
     foreignKey: 'lockId', target: 'id'

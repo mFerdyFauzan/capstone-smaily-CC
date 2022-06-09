@@ -1,5 +1,4 @@
 const db = require("../models");
-//const ROLES = db.ROLES;
 const Parent = db.parent;
 
 checkDuplicateUsernameOrEmail = (req, res, next) => {
@@ -27,7 +26,6 @@ checkDuplicateUsernameOrEmail = (req, res, next) => {
 
 const verifySignUp = {
   checkDuplicateUsernameOrEmail: checkDuplicateUsernameOrEmail,
-  //checkRolesExisted: checkRolesExisted
 };
 
 module.exports = verifySignUp;

@@ -12,24 +12,24 @@ module.exports = function (app) {
         next();
     });
     app.post(
-        "/api/auth/register",
+        "/auth/register",
         [
             verifySignUp.checkDuplicateUsernameOrEmail
         ],
         controller.registerParent
     );
     app.post(
-        "/api/auth/register/:id/children",
+        "/auth/register/:id/children",
         [authJwt.verifyToken, authJwt.isParent],
         controller.registerChildren
     );
     app.post(
-        "/api/auth/login/children/:token",
+        "/auth/login/children/:token",
         [
             authJwt.verifyConnectToken
         ],
         controller.logInChildren
     );
-    app.post("/api/auth/login", controller.logIn);
-    app.post("/api/auth/refreshtoken", controller.refreshToken);
+    app.post("/auth/login", controller.logIn);
+    app.post("/auth/refreshtoken", controller.refreshToken);
 };

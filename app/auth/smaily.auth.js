@@ -4,7 +4,6 @@ const ConnectToken = db.connectToken;
 const Children = db.children;
 const jwt = require("jsonwebtoken");
 const config = require("./auth.config");
-const { children } = require("../models");
 const { TokenExpiredError } = jwt;
 
 const catchError = (err, res) => {
@@ -14,7 +13,6 @@ const catchError = (err, res) => {
     return res.sendStatus(403).send({ message: "Unauthorized!" });
 }
 const verifyToken = (req, res, next) => {
-    //let token = req.cookies.jwt;
     let token = req.headers["x-access-token"];
     if (!token) {
         return res.status(401).send({
@@ -48,12 +46,14 @@ async function verifyConnectToken(req, res, next) {
                     Children.destroy({
                         where: { id: child.id }
                     })
+                } else {
+                    res.status(404).send({ message: "Children not found" })
                 }
             })
             ConnectToken.destroy({
                 where: { id: cekToken.id }
             })
-            res.status(403).json({
+            res.status(400).json({
                 message: "Connect token was expired. Please make a new register child request",
             });
             return;
@@ -110,58 +110,3 @@ const authJwt = {
     isParentOrAdmin: isParentOrAdmin
 };
 module.exports = authJwt;
-/*
-exports.adminAuth = (req, res, next) => {
-    const token = req.cookies.jwt;
-    if (token) {
-        jwt.verify(token, jwtSecret, (err, decodedToken) => {
-            if (err) {
-                return res.status(403).send({ message: "Not Authorized" });
-            } else {
-                if (decodedToken.role !== "admin") {
-                    return res.status(403).send({ message: "Not Authorized" });
-                } else {
-                    next();
-                }
-            }
-        })
-    } else {
-        return res.status(403).send({ message: "Not Authorized, token not available " });
-    }
-}
-
-exports.userAuth = (req, res, next) => {
-    const token = req.cookies.jwt;
-    if (token) {
-        jwt.verify(token, jwtSecret, (err, decodedToken) => {
-            if (err) {
-                return res.status(403).send({ err: err.message });
-            } else {
-                if (decodedToken.role !== ("admin" || "parent" || "children")) {
-                    return res.status(403).send({ message: "Not Authorized" });
-                } else {
-                    next();
-                }
-            }
-        })
-    } else {
-        return res.status(403).send({ message: "Not Authorized, token not available" });
-    }
-}
-/*
-exports.getUsers = async (req, res, next) => {
-    await User.find({})
-        .then(users => {
-            const userFunction = users.map(user => {
-                const container = {}
-                container.username = user.username
-                container.role = user.role
-                return container
-            })
-            res.status(200).json({ user: userFunction })
-        })
-        .catch(err =>
-            res.status(401).json({ message: "Not successful", error: err.message })
-        )
-}
-*/

@@ -42,7 +42,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://35.198.213.147/api/auth/register",
+					"raw": "http://35.198.213.147/auth/register",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -51,7 +51,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"auth",
 						"register"
 					]
@@ -66,7 +65,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"admin@smaily.com\",\r\n    \"password\": \"$4dm1n5m4i1yP4reNt%\"\r\n}",
+					"raw": "{\r\n    \"email\": \"parent@gmail.com\",\r\n    \"password\": \"PNZSO2BNnjasbx1._!\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -74,7 +73,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://35.198.213.147/api/auth/login",
+					"raw": "http://35.198.213.147/auth/login",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -83,7 +82,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"auth",
 						"login"
 					]
@@ -103,7 +101,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://35.198.213.147/api/user/jf2A-wpknH/profile",
+					"raw": "http://35.198.213.147/user/jf2A-wpknH",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -112,10 +110,8 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"user",
-						"jf2A-wpknH",
-						"profile"
+						"jf2A-wpknH"
 					]
 				}
 			},
@@ -128,13 +124,13 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImtXd0FPN3RwVUYiLCJpYXQiOjE2NTQwOTgyMDQsImV4cCI6MTY1NDA5ODUwNH0.WdfSUi1geXotjOed_7a65FSDAfg4-CxRVSbneQI7eAA",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImlkWUJQYXR6V04iLCJpYXQiOjE2NTQ3ODg4NDQsImV4cCI6MTY4NjM0NTc3MH0.qTsEIjO6S_ngFdh3x7eCjJCSQs24Tir-V_wyWpOdd28",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"app\": \"Youtube\",\r\n    \"lock\": true\r\n}",
+					"raw": "{\r\n    \"app\": \"Instagram\",\r\n    \"lock\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -142,7 +138,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://35.198.213.147/api/user/kWwAO7tpUF/lock/app",
+					"raw": "http://35.198.213.147/user/kWwAO7tpUF/lock/app",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -151,7 +147,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"user",
 						"kWwAO7tpUF",
 						"lock",
@@ -168,7 +163,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkdoY2hveG5veFIiLCJpYXQiOjE2NTQ1MDgxODYsImV4cCI6MTY4NjA2NTExMn0.gmbQSFh1Li2Zk51LkGRu4R_HGqNNjjMHhD1b6OCahPY",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImlkWUJQYXR6V04iLCJpYXQiOjE2NTQ3ODg4NDQsImV4cCI6MTY4NjM0NTc3MH0.qTsEIjO6S_ngFdh3x7eCjJCSQs24Tir-V_wyWpOdd28",
 						"type": "text"
 					}
 				],
@@ -182,7 +177,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://35.198.213.147/api/user/GhchoxnoxR/lock/app",
+					"raw": "http://35.198.213.147/user/GhchoxnoxR/lock/app",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -191,7 +186,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"user",
 						"GhchoxnoxR",
 						"lock",
@@ -208,7 +202,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlhvNkRqUWNEMHciLCJpYXQiOjE2NTQ0MjU4MTcsImV4cCI6MTY4NTk4Mjc0M30.emFRJeqHwhwDBbYPcOOLO7VSxHCg3kNMHlNydJAbol8",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImlkWUJQYXR6V04iLCJpYXQiOjE2NTQ3ODg4NDQsImV4cCI6MTY4NjM0NTc3MH0.qTsEIjO6S_ngFdh3x7eCjJCSQs24Tir-V_wyWpOdd28",
 						"type": "text"
 					}
 				],
@@ -222,7 +216,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://35.198.213.147/api/user/Xo6DjQcD0w/lock/url",
+					"raw": "http://35.198.213.147/user/Xo6DjQcD0w/lock/url",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -231,7 +225,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"user",
 						"Xo6DjQcD0w",
 						"lock",
@@ -248,7 +241,7 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkdoY2hveG5veFIiLCJpYXQiOjE2NTQ1MDgxODYsImV4cCI6MTY4NjA2NTExMn0.gmbQSFh1Li2Zk51LkGRu4R_HGqNNjjMHhD1b6OCahPY",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImlkWUJQYXR6V04iLCJpYXQiOjE2NTQ3ODg4NDQsImV4cCI6MTY4NjM0NTc3MH0.qTsEIjO6S_ngFdh3x7eCjJCSQs24Tir-V_wyWpOdd28",
 						"type": "text"
 					}
 				],
@@ -262,7 +255,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://35.198.213.147/api/user/GhchoxnoxR/lock/url",
+					"raw": "http://35.198.213.147/user/GhchoxnoxR/lock/url",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -271,7 +264,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"user",
 						"GhchoxnoxR",
 						"lock",
@@ -302,7 +294,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://35.198.213.147/api/user/PZgkK0ISsR/password",
+					"raw": "http://35.198.213.147/user/PZgkK0ISsR/password",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -311,7 +303,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"user",
 						"PZgkK0ISsR",
 						"password"
@@ -335,7 +326,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://35.198.213.147/api/auth/refreshtoken",
+					"raw": "http://35.198.213.147/auth/refreshtoken",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -344,7 +335,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"auth",
 						"refreshtoken"
 					]
@@ -359,12 +349,12 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRwRFZzUEFxVWEiLCJpYXQiOjE2NTM2NjU1ODQsImV4cCI6MTY1MzY2NTg4NH0.r_IeK44IHYQd-8Qky-JZiYtXhIKh9WuSh2TPkd31r6Y",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImlkWUJQYXR6V04iLCJpYXQiOjE2NTQ3ODg4NDQsImV4cCI6MTY4NjM0NTc3MH0.qTsEIjO6S_ngFdh3x7eCjJCSQs24Tir-V_wyWpOdd28",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "http://35.198.213.147/api/auth/register/tpDVsPAqUa/children",
+					"raw": "http://35.198.213.147/auth/register/tpDVsPAqUa/children",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -373,7 +363,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"auth",
 						"register",
 						"tpDVsPAqUa",
@@ -389,7 +378,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://35.198.213.147/api/auth/login/children/Njjgd",
+					"raw": "http://35.198.213.147/auth/login/children/Njjgd",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -398,7 +387,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"auth",
 						"login",
 						"children",
@@ -420,7 +408,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://35.198.213.147/api/children/sGvmX7bSzu",
+					"raw": "http://35.198.213.147/children/sGvmX7bSzu",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -429,7 +417,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"children",
 						"sGvmX7bSzu"
 					]
@@ -444,12 +431,12 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImpXTVRuRjFScXEiLCJpYXQiOjE2NTQwOTgyNjMsImV4cCI6MTY1NDA5ODU2M30.p99f111bAONZWsdjbRbtFmOwMbyurT7WjnS16IyVBk0",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImlkWUJQYXR6V04iLCJpYXQiOjE2NTQ3ODg4NDQsImV4cCI6MTY4NjM0NTc3MH0.qTsEIjO6S_ngFdh3x7eCjJCSQs24Tir-V_wyWpOdd28",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "http://35.198.213.147/api/children/jWMTnF1Rqq/lock/app",
+					"raw": "http://35.198.213.147/children/jWMTnF1Rqq/lock/app",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -458,7 +445,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"children",
 						"jWMTnF1Rqq",
 						"lock",
@@ -475,12 +461,12 @@
 				"header": [
 					{
 						"key": "x-access-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IlhvNkRqUWNEMHciLCJpYXQiOjE2NTQ0MjU4MTcsImV4cCI6MTY4NTk4Mjc0M30.emFRJeqHwhwDBbYPcOOLO7VSxHCg3kNMHlNydJAbol8",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImlkWUJQYXR6V04iLCJpYXQiOjE2NTQ3ODg4NDQsImV4cCI6MTY4NjM0NTc3MH0.qTsEIjO6S_ngFdh3x7eCjJCSQs24Tir-V_wyWpOdd28",
 						"type": "text"
 					}
 				],
 				"url": {
-					"raw": "http://35.198.213.147/api/children/Xo6DjQcD0w/lock/url",
+					"raw": "http://35.198.213.147/children/Xo6DjQcD0w/lock/url",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -489,7 +475,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"children",
 						"Xo6DjQcD0w",
 						"lock",
@@ -511,7 +496,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://35.198.213.147/api/admin/find",
+					"raw": "http://35.198.213.147/admin/find",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -520,7 +505,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"admin",
 						"find"
 					]
@@ -540,7 +524,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://35.198.213.147/api/admin/find/bkyxVqYrwK",
+					"raw": "http://35.198.213.147/admin/find/bkyxVqYrwK",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -549,7 +533,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"admin",
 						"find",
 						"bkyxVqYrwK"
@@ -579,7 +562,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://35.198.213.147/api/admin/update/user/cl5Tj2RNDx",
+					"raw": "http://35.198.213.147/admin/update/user/cl5Tj2RNDx",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -588,7 +571,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"admin",
 						"update",
 						"user",
@@ -610,7 +592,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://35.198.213.147/api/admin/delete/user/O4-D5m4MPi",
+					"raw": "http://35.198.213.147/admin/delete/user/O4-D5m4MPi",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -619,7 +601,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"admin",
 						"delete",
 						"user",
@@ -641,7 +622,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://35.198.213.147/api/admin/delete/user",
+					"raw": "http://35.198.213.147/admin/delete/user",
 					"protocol": "http",
 					"host": [
 						"35",
@@ -650,7 +631,6 @@
 						"147"
 					],
 					"path": [
-						"api",
 						"admin",
 						"delete",
 						"user"
