@@ -57,27 +57,27 @@ module.exports = function (app) {
         controller.deleteLockUrl
     )
     app.get(
-        "/admin/find",
+        "/admin/list",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.findAll
     );
     app.get(
-        "/admin/find/:id",
+        "/admin/user/:id",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.findOne
     );
     app.put(
-        "/admin/update/user/:id",
+        "/admin/user/:id",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.update
     );
     app.delete(
-        "/admin/delete/user/:id",
+        "/admin/user/:id",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.deleteOne
     );
     app.delete(
-        "/admin/delete/user",
+        "/admin/delete",
         [authJwt.verifyToken, authJwt.isAdmin],
         controller.deleteAll
     );

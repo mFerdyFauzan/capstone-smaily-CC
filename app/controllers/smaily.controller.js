@@ -287,7 +287,7 @@ exports.findAll = (req, res) => {
         }]
     }).then(data => {
         const response = getPagingData(data, page, limit);
-        res.send(response);
+        res.status(200).send(response);
     })
         .catch(err => { res.status(500).send({ message: err.message }) });
 };
@@ -331,7 +331,7 @@ exports.changePassword = (req, res) => {
                     })
                         .then(success => {
                             if (success == 1) {
-                                res.status(201).send({
+                                res.status(200).send({
                                     message: "Your password has been changed."
                                 });
                             } else {
@@ -367,13 +367,11 @@ exports.update = (req, res) => {
             })
                 .then(user => {
                     if (user == 1) {
-                        res.status(201).send({
+                        res.status(200).send({
                             message: "Update Successful.",
                             id: user.id,
                             name: user.name,
-                            username: user.username,
                             email: user.email,
-                            role: user.role
                         });
                     } else {
                         res.status(400).send({
