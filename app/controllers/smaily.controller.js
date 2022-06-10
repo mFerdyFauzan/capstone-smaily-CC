@@ -102,7 +102,7 @@ exports.registerChildren = (req, res) => {
                 where: { childrenId: data.id }
             }).then(found => {
                 if (found) {
-                    res.status(400).send({ message: "You cannot register more than one child!" });
+                    res.status(403).send({ message: "You cannot register more than one child!" });
                 }
                 else if (!found) {
                     ConnectToken.findOne({
@@ -178,7 +178,7 @@ exports.logInChildren = async (req, res) => {
                         });
                     }
                     else {
-                        res.status(500).send({ message: "Register failed" });
+                        res.status(500).send({ message: "Login failed. Cannot connect to the parent account." });
                     }
                 })
                 .catch(err => { res.status(500).send({ message: err.message }) });
@@ -319,7 +319,7 @@ exports.changePassword = (req, res) => {
                     user.password
                 );
                 if (!passwordIsValid) {
-                    return res.status(401).send({
+                    return res.status(403).send({
                         message: "Invalid Password! Cannot change your password"
                     });
                 }
@@ -335,7 +335,7 @@ exports.changePassword = (req, res) => {
                                     message: "Your password has been changed."
                                 });
                             } else {
-                                res.status(400).send({
+                                res.status(500).send({
                                     message: "Password change failed! Please try again"
                                 });
                             }
@@ -467,14 +467,14 @@ exports.refreshToken = async (req, res) => {
     try {
         let refreshToken = await RefreshToken.findOne({ where: { token: requestToken } });
         if (!refreshToken) {
-            res.status(404).send({ message: "Refresh token is not in database!" });
+            res.status(404).send({ message: "Refresh token is not in the database!" });
             return;
         }
         if (RefreshToken.verifyExpiration(refreshToken)) {
             RefreshToken.destroy({ where: { id: refreshToken.id } });
 
             res.status(403).send({
-                message: "Refresh token was expired. Please make a new signin request",
+                message: "Refresh token has expired. Please make a new sign in request",
             });
             return;
         }
