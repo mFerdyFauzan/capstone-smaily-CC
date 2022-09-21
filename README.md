@@ -1,6 +1,6 @@
-# Capstone-Smaily
+# About Smaily
 
-Repository team Smaily sebagai tempat untuk menampung code backend untuk Capstone Project di Bangkit Academy 2022
+Smaily merupakan aplikasi digital parenting yang memberikan sarana bagi orang tua untuk melakukan pemantauan dan pengontrolan atas aktivitas anak mereka selama menggunakan smartphone android. Smaily dibuat untuk memenuhi kebutuhan pembuatan Product-based Capstone Project dari kelompok C22-PS302 di Bangkit Academy 2022.
 
 ## CARA PAKAI (localhost):
 1. Bikin database dulu di PostgreSQL yang namanya "testdb"
@@ -30,12 +30,6 @@ Repository team Smaily sebagai tempat untuk menampung code backend untuk Capston
    - Masukkan variabel / parameter sesuai dengan API yang ingin diuji
    - Klik tombol Send untuk mengirim request ke API
    - Respons akan dikirim sesuai API yang diuji
-2. (Opsional) Sambung langsung melalui pSQL ke server (untuk verifikasi, query, dll)
-   - Install PostgreSQL
-   - Buka pSQL (PostgreSQL Shell)
-   - Masukkan konfigurasi koneksi seperti yang tertera pada file db.config.js
-   
-   ![Konfigurasi Koneksi](https://user-images.githubusercontent.com/69382273/172047643-8b0c76d9-d1a1-4694-8d6e-e94abe046dd7.png)
 
 
 ###### **YANG SUDAH:**
